@@ -1,0 +1,778 @@
+openapi: 3.0.0
+info:
+  version: 0.0.1
+  title: ANM4L API
+  description: ''
+paths:
+  /models:
+    get:
+      tags:
+        - Network Models
+      summary: Get all network models
+      operationId: getModels
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "hello dave!"
+            # application/json:
+              # schema:
+                # type: array
+                # items:
+                  # $ref: '#/components/schemas/Model'
+        default:
+          description: unexpected error
+          content:
+            # application/json:
+              # schema:
+                # $ref: "#/components/schemas/Error"
+            text/plain:
+              schema:
+                type: string
+                example: "ERRororororor"
+    post:
+      tags:
+        - Network Models
+      summary: Add a network model
+      operationId: addModel
+      requestBody:
+        description: Network model to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewModel'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /models/{id}:
+    get:
+      tags:
+        - Network Models
+      summary: Get a network model
+      operationId: getModel
+      parameters:
+        - name: id
+          description: Model id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - Network Models
+      summary: Update a network model
+      operationId: updateModel
+      parameters:
+        - name: id
+          description: Model id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Network model to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - Network Models
+      summary: Delete a network model
+      operationId: deleteModel
+      parameters:
+        - name: id
+          description: Model id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /models/import/{id}:
+    post:
+      tags:
+        - Network Models
+      summary: Import model from file
+      description: >-
+        The input file should be an archive containing the grid data
+        in the CIM format. Optionally, profiles or stochastic parameters can be
+        given as additional files, where file and column name should correspond
+        to the CIM component uuid and attribute name.
+      operationId: importModel
+      parameters:
+        - name: id
+          description: Model id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Files defining the model
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+          text/uri-list:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /models/export/{id}:
+    get:
+      tags:
+        - Network Models
+      summary: Export model to file
+      description: >-
+        Returns an archive containing the grid data in CIM formatted files
+        and profile files that might have been imported previously.
+      operationId: exportModel
+      parameters:
+        - name: id
+          description: Model id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                description: archive containing the CIM files
+                type: string
+                format: binary
+            text/uri-list:
+              schema:
+                description: link to archive containing the CIM files
+                type: string
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /models/image/{id}:
+    get:
+      tags:
+        - Network Models
+      summary: Render and return image of network model
+      description: >-
+        Returns an SVG image of the network based on CIM information.
+      operationId: getModelImage
+      parameters:
+        - name: id
+          description: Model id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                description: image file as SVG
+                type: string
+                format: binary
+            text/uri-list:
+              schema:
+                description: link to image file as SVG
+                type: string
+        default:
+            description: unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+
+  /models/{modelid}/elements:
+    get:
+      tags:
+        - Network Models
+      summary: Get all elements of a model
+      operationId: getElements
+      parameters:
+        - name: modelid
+          description: Model id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModelElement'
+        default:
+            description: unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - Network Models
+      summary: Add element to model
+      operationId: addElement
+      parameters:
+        - name: modelid
+          description: Model id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Element to be added to model
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewModelElement'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelElement'
+        default:
+            description: unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+
+  /models/{modelid}/elements/{id}:
+    get:
+      tags:
+        - Network Models
+      summary: Get element of model
+      operationId: getElement
+      parameters:
+        - name: modelid
+          description: Model id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          description: Element id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelElementAttributes'
+        default:
+            description: unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - Network Models
+      summary: Update element of model
+      operationId: updateElement
+      parameters:
+        - name: modelid
+          description: model id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          description: element id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Model Element attributes to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelElementUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelElement'
+        default:
+            description: unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - Network Models
+      summary: Delete element of model
+      operationId: deleteElement
+      parameters:
+        - name: modelid
+          description: model id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          description: element id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelElement'
+        default:
+            description: unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+
+
+components:
+  schemas:
+    # User:
+      # type: object
+      # properties:
+        # active:
+          # description: >
+            # Indicating status of user (false means user is inactive and should not
+            # be able to login)
+          # type: boolean
+        # id:
+          # type: integer
+        # mail:
+          # description: Mail of user
+          # type: string
+        # role:
+          # description: Role of user
+          # type: string
+        # name:
+          # description: Username of user
+          # type: string
+    # NewUser:
+      # type: object
+      # required:
+        # - name
+        # - password
+        # - mail
+        # - role
+      # properties:
+        # name:
+          # type: string
+        # password:
+          # type: string
+        # mail:
+          # type: string
+        # role:
+          # type: string
+    # UserUpdate:
+      # type: object
+      # properties:
+        # active:
+          # type: string
+        # mail:
+          # type: string
+        # old_password:
+          # type: string
+        # password:
+          # type: string
+        # role:
+          # type: string
+        # name:
+          # type: string
+
+    Model:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          description: Name of simulation model
+          type: string
+    NewModel:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+    ModelUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+
+    ModelElement:
+      type: object
+      properties:
+        id:
+          type: integer
+        uuid:
+          description: CIM uuid of model element
+          type: string
+        name:
+          description: Name of model element
+          type: string
+        type:
+          description: CIM type of model element
+          type: string
+    ModelElementAttributes:
+      type: object
+      properties:
+        id:
+          type: integer
+        uuid:
+          description: CIM uuid of model element
+          type: string
+        name:
+          description: Name of model element
+          type: string
+        type:
+          description: CIM type of model element
+          type: string
+        attributes:
+          description: Element attributes, e.g. strings and numbers
+          type: object
+          additionalProperties: {}
+    NewModelElement:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          description: Name of model element
+          type: string
+        type:
+          description: CIM type of model element
+          type: string
+        param:
+          description: Element attributes, e.g. strings and numbers
+          type: object
+          additionalProperties: {}
+    ModelElementUpdate:
+      type: object
+      properties:
+        name:
+          description: Name of model element
+          type: string
+        type:
+          description: CIM type of model element
+          type: string
+        param:
+          description: Element attributes, e.g. strings and numbers
+          type: object
+          additionalProperties: {}
+
+    # Analysis:
+      # type: object
+      # properties:
+        # id:
+          # type: integer
+        # name:
+          # description: Name of analysis case
+          # type: string
+        # type:
+          # description: Type of analysis, e.g. powerflow
+          # type: string
+        # modelid:
+          # description: Model to consider for analysis
+          # type: integer
+        # status:
+          # description: Indicate if analysis is completed or not
+          # type: string
+    # NewPowerflow:
+      # type: object
+      # required:
+        # - name
+        # - modelid
+      # properties:
+        # name:
+          # type: string
+        # modelid:
+          # description: Model to consider for the powerflow calculation
+          # type: integer
+        # param:
+          # description: >-
+            # attribute map, e.g. strings and numbers to define solver
+            # settings etc.
+          # type: object
+          # additionalProperties: {}
+    # NewOutage:
+      # type: object
+      # required:
+        # - name
+        # - modelid
+        # - nm1List
+      # properties:
+        # name:
+          # type: string
+        # modelid:
+          # description: Model to consider for the powerflow calculation
+          # type: integer
+        # nm1List:
+          # description: List of N-1 components
+          # type: array
+          # items:
+            # type: string
+        # nm2List:
+          # description: List of N-2 components
+          # type: array
+          # items:
+            # type: string
+        # param:
+          # description: attribute map, e.g. strings and numbers
+          # type: object
+          # additionalProperties: {}
+
+    # Scenario:
+      # type: object
+      # properties:
+        # id:
+          # type: integer
+        # name:
+          # type: string
+    # NewScenario:
+      # type: object
+      # required:
+        # - name
+      # properties:
+        # name:
+          # type: string
+        # model:
+          # description: Name of model associated to this scenario
+          # type: integer
+        # param:
+          # description: attribute map, e.g. strings and numbers
+          # type: object
+          # additionalProperties: {}
+
+    # Event:
+      # type: object
+      # properties:
+        # id:
+          # type: integer
+        # name:
+          # description: Event name
+          # type: string
+    # NewEvent:
+      # type: object
+      # required:
+        # - name
+      # properties:
+        # name:
+          # type: string
+        # time:
+          # type: number
+        # param:
+          # description: attribute map, e.g. strings and numbers
+          # type: object
+          # additionalProperties: {}
+
+    # Timeseries:
+      # type: object
+      # properties:
+        # id:
+          # type: integer
+        # elementuuid:
+          # description: CIM uuid of model element associated to time series
+          # type: string
+        # attributes:
+          # description: element attribute associated to time series
+          # type: string
+        # name:
+          # type: string
+        # labels:
+          # description: time series labels and tags
+          # type: array
+          # items:
+            # type: string
+
+    # NewTimeseries:
+      # type: object
+      # required:
+        # - name
+        # - attribute
+      # properties:
+        # elementuuid:
+          # description: CIM uuid of model element associated to time series
+          # type: string
+        # attributes:
+          # description: (element) attribute associated to time series
+          # type: string
+        # name:
+          # type: string
+        # labels:
+          # description: time series labels and tags
+          # type: array
+          # items:
+            # type: string
+
+    # Simulation:
+      # type: object
+      # properties:
+        # id:
+          # type: integer
+        # name:
+          # description: Name of simulation case
+          # type: string
+    # NewSimulation:
+      # type: object
+      # required:
+        # - name
+      # properties:
+        # name:
+          # type: string
+        # starttime:
+          # type: number
+        # endtime:
+          # type: number
+        # timestep:
+          # type: number
+        # solver:
+          # type: string
+        # param:
+          # description: attribute map, e.g. strings and numbers
+          # type: object
+          # additionalProperties: {}
+
+    # Control:
+      # type: object
+      # properties:
+        # id:
+          # type: integer
+        # name:
+          # description: Name of controller instance
+          # type: string
+    # NewControl:
+      # type: object
+      # required:
+        # - name
+        # - method
+      # properties:
+        # name:
+          # type: string
+        # method:
+          # type: string
+        # param:
+          # description: attribute map, e.g. strings and numbers
+          # type: object
+          # additionalProperties: {}
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+  # securitySchemes:
+    # ApiKeyAuth:
+      # type: apiKey
+      # in: header
+      # name: X-API-KEY
+
+# Apply the API key globally to all operations
+# security:
+  # - ApiKeyAuth: []     # use the same name as under securitySchemes
+
+servers:
+  - description: Example server
+    url: https://example.org/CIM/0.0.1
