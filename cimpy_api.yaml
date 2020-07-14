@@ -581,4 +581,4 @@ security:
 
 servers:
   - description: Example server
-    url: https://example.org/CIM/0.0.1
+    url: https://example.org/
