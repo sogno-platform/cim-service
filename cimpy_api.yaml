@@ -9,7 +9,7 @@ paths:
       tags:
         - Network Models
       summary: Get all network models
-      operationId: getModels
+      operationId: cimadapter.get_models
       responses:
         '200':
           description: OK
@@ -37,7 +37,7 @@ paths:
       tags:
         - Network Models
       summary: Add a network model
-      operationId: addModel
+      operationId: cimadapter.add_model
       requestBody:
         description: Network model to be added
         required: true
@@ -63,7 +63,7 @@ paths:
       tags:
         - Network Models
       summary: Get a network model
-      operationId: getModel
+      operationId: cimadapter.get_model
       parameters:
         - name: id
           description: Model id
@@ -88,7 +88,7 @@ paths:
       tags:
         - Network Models
       summary: Update a network model
-      operationId: updateModel
+      operationId: cimadapter.update_model
       parameters:
         - name: id
           description: Model id
@@ -120,7 +120,7 @@ paths:
       tags:
         - Network Models
       summary: Delete a network model
-      operationId: deleteModel
+      operationId: cimadapter.delete_model
       parameters:
         - name: id
           description: Model id
@@ -152,7 +152,7 @@ paths:
         in the CIM format. Optionally, profiles or stochastic parameters can be
         given as additional files, where file and column name should correspond
         to the CIM component uuid and attribute name.
-      operationId: importModel
+      operationId: cimadapter.import_model
       parameters:
         - name: id
           description: Model id
@@ -193,7 +193,7 @@ paths:
       description: >-
         Returns an archive containing the grid data in CIM formatted files
         and profile files that might have been imported previously.
-      operationId: exportModel
+      operationId: cimadapter.export_model
       parameters:
         - name: id
           description: Model id
@@ -228,7 +228,7 @@ paths:
       summary: Render and return image of network model
       description: >-
         Returns an SVG image of the network based on CIM information.
-      operationId: getModelImage
+      operationId: cimadapter.get_model_image
       parameters:
         - name: id
           description: Model id
@@ -261,7 +261,7 @@ paths:
       tags:
         - Network Models
       summary: Get all elements of a model
-      operationId: getElements
+      operationId: cimadapter.get_elements
       parameters:
         - name: modelid
           description: Model id
@@ -288,7 +288,7 @@ paths:
       tags:
         - Network Models
       summary: Add element to model
-      operationId: addElement
+      operationId: cimadapter.add_element
       parameters:
         - name: modelid
           description: Model id
@@ -322,7 +322,7 @@ paths:
       tags:
         - Network Models
       summary: Get element of model
-      operationId: getElement
+      operationId: cimadapter.get_element
       parameters:
         - name: modelid
           description: Model id
@@ -353,7 +353,7 @@ paths:
       tags:
         - Network Models
       summary: Update element of model
-      operationId: updateElement
+      operationId: cimadapter.update_element
       parameters:
         - name: modelid
           description: model id
@@ -391,7 +391,7 @@ paths:
       tags:
         - Network Models
       summary: Delete element of model
-      operationId: deleteElement
+      operationId: cimadapter.delete_element
       parameters:
         - name: modelid
           description: model id
@@ -555,201 +555,6 @@ components:
           description: Element attributes, e.g. strings and numbers
           type: object
           additionalProperties: {}
-
-    # Analysis:
-      # type: object
-      # properties:
-        # id:
-          # type: integer
-        # name:
-          # description: Name of analysis case
-          # type: string
-        # type:
-          # description: Type of analysis, e.g. powerflow
-          # type: string
-        # modelid:
-          # description: Model to consider for analysis
-          # type: integer
-        # status:
-          # description: Indicate if analysis is completed or not
-          # type: string
-    # NewPowerflow:
-      # type: object
-      # required:
-        # - name
-        # - modelid
-      # properties:
-        # name:
-          # type: string
-        # modelid:
-          # description: Model to consider for the powerflow calculation
-          # type: integer
-        # param:
-          # description: >-
-            # attribute map, e.g. strings and numbers to define solver
-            # settings etc.
-          # type: object
-          # additionalProperties: {}
-    # NewOutage:
-      # type: object
-      # required:
-        # - name
-        # - modelid
-        # - nm1List
-      # properties:
-        # name:
-          # type: string
-        # modelid:
-          # description: Model to consider for the powerflow calculation
-          # type: integer
-        # nm1List:
-          # description: List of N-1 components
-          # type: array
-          # items:
-            # type: string
-        # nm2List:
-          # description: List of N-2 components
-          # type: array
-          # items:
-            # type: string
-        # param:
-          # description: attribute map, e.g. strings and numbers
-          # type: object
-          # additionalProperties: {}
-
-    # Scenario:
-      # type: object
-      # properties:
-        # id:
-          # type: integer
-        # name:
-          # type: string
-    # NewScenario:
-      # type: object
-      # required:
-        # - name
-      # properties:
-        # name:
-          # type: string
-        # model:
-          # description: Name of model associated to this scenario
-          # type: integer
-        # param:
-          # description: attribute map, e.g. strings and numbers
-          # type: object
-          # additionalProperties: {}
-
-    # Event:
-      # type: object
-      # properties:
-        # id:
-          # type: integer
-        # name:
-          # description: Event name
-          # type: string
-    # NewEvent:
-      # type: object
-      # required:
-        # - name
-      # properties:
-        # name:
-          # type: string
-        # time:
-          # type: number
-        # param:
-          # description: attribute map, e.g. strings and numbers
-          # type: object
-          # additionalProperties: {}
-
-    # Timeseries:
-      # type: object
-      # properties:
-        # id:
-          # type: integer
-        # elementuuid:
-          # description: CIM uuid of model element associated to time series
-          # type: string
-        # attributes:
-          # description: element attribute associated to time series
-          # type: string
-        # name:
-          # type: string
-        # labels:
-          # description: time series labels and tags
-          # type: array
-          # items:
-            # type: string
-
-    # NewTimeseries:
-      # type: object
-      # required:
-        # - name
-        # - attribute
-      # properties:
-        # elementuuid:
-          # description: CIM uuid of model element associated to time series
-          # type: string
-        # attributes:
-          # description: (element) attribute associated to time series
-          # type: string
-        # name:
-          # type: string
-        # labels:
-          # description: time series labels and tags
-          # type: array
-          # items:
-            # type: string
-
-    # Simulation:
-      # type: object
-      # properties:
-        # id:
-          # type: integer
-        # name:
-          # description: Name of simulation case
-          # type: string
-    # NewSimulation:
-      # type: object
-      # required:
-        # - name
-      # properties:
-        # name:
-          # type: string
-        # starttime:
-          # type: number
-        # endtime:
-          # type: number
-        # timestep:
-          # type: number
-        # solver:
-          # type: string
-        # param:
-          # description: attribute map, e.g. strings and numbers
-          # type: object
-          # additionalProperties: {}
-
-    # Control:
-      # type: object
-      # properties:
-        # id:
-          # type: integer
-        # name:
-          # description: Name of controller instance
-          # type: string
-    # NewControl:
-      # type: object
-      # required:
-        # - name
-        # - method
-      # properties:
-        # name:
-          # type: string
-        # method:
-          # type: string
-        # param:
-          # description: attribute map, e.g. strings and numbers
-          # type: object
-          # additionalProperties: {}
 
     Error:
       type: object
