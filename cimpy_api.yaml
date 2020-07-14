@@ -568,15 +568,16 @@ components:
         message:
           type: string
 
-  # securitySchemes:
-    # ApiKeyAuth:
-      # type: apiKey
-      # in: header
-      # name: X-API-KEY
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      x-apikeyInfoFunc: cimadapter.apikey_auth
 
-# Apply the API key globally to all operations
-# security:
-  # - ApiKeyAuth: []     # use the same name as under securitySchemes
+# Apply the apikey globally to all operations
+security:
+  - ApiKeyAuth: []     # use the same name as under securitySchemes
 
 servers:
   - description: Example server
