@@ -18,18 +18,13 @@ def add_model(new_model):  # noqa: E501
 def get_models():  # noqa: E501
     """Get all network models
 
-     # noqa: E501
-
-
     :rtype: str
     """
     return 'do some magic!'
 
 
-def add_element(modelid, new_model_element):  # noqa: E501
+def add_element(modelid, new_model_element):
     """Add element to model
-
-     # noqa: E501
 
     :param modelid: Model id
     :type modelid: int
@@ -43,12 +38,9 @@ def add_element(modelid, new_model_element):  # noqa: E501
     return 'do some magic!'
 
 
-
-
-def delete_element(modelid, id_):  # noqa: E501
+def delete_element(modelid, id_):
     """Delete element of model
 
-     # noqa: E501
 
     :param modelid: model id
     :type modelid: int
@@ -60,10 +52,8 @@ def delete_element(modelid, id_):  # noqa: E501
     return 'do some magic!'
 
 
-def delete_model(id_):  # noqa: E501
+def delete_model(id_):
     """Delete a network model
-
-     # noqa: E501
 
     :param id: Model id
     :type id: int
@@ -73,10 +63,11 @@ def delete_model(id_):  # noqa: E501
     return 'do some magic!'
 
 
-def export_model(id_):  # noqa: E501
+def export_model(id_):
     """Export model to file
 
-    Returns an archive containing the grid data in CIM formatted files and profile files that might have been imported previously. # noqa: E501
+    Returns an archive containing the grid data in CIM formatted files and
+    profile files that might have been imported previously.
 
     :param id: Model id
     :type id: int
@@ -86,10 +77,8 @@ def export_model(id_):  # noqa: E501
     return 'do some magic!'
 
 
-def get_element(modelid, id_):  # noqa: E501
+def get_element(modelid, id_):
     """Get element of model
-
-     # noqa: E501
 
     :param modelid: Model id
     :type modelid: int
@@ -101,10 +90,9 @@ def get_element(modelid, id_):  # noqa: E501
     return 'do some magic!'
 
 
-def get_elements(modelid_):  # noqa: E501
+def get_elements(modelid_):
     """Get all elements of a model
 
-     # noqa: E501
 
     :param modelid: Model id
     :type modelid: int
@@ -114,10 +102,9 @@ def get_elements(modelid_):  # noqa: E501
     return 'do some magic!'
 
 
-def get_model(id_):  # noqa: E501
+def get_model(id_):
     """Get a network model
 
-     # noqa: E501
 
     :param id: Model id
     :type id: int
@@ -128,7 +115,7 @@ def get_model(id_):  # noqa: E501
     return 'do some magic!'
 
 
-def get_model_image(id_):  # noqa: E501
+def get_model_image(id_):
     """Render and return image of network model
 
     Returns an SVG image of the network based on CIM information. # noqa: E501
@@ -141,7 +128,7 @@ def get_model_image(id_):  # noqa: E501
     return 'do some magic!'
 
 
-def import_model(id, body):  # noqa: E501
+def import_model(id, body):
     """Import model from file
 
     The input file should be an archive containing the grid data in the CIM
@@ -159,10 +146,9 @@ def import_model(id, body):  # noqa: E501
     return 'do some magic!'
 
 
-def update_element(modelid, id, model_element_update):  # noqa: E501
+def update_element(modelid, id, model_element_update):
     """Update element of model
 
-     # noqa: E501
 
     :param modelid: model id
     :type modelid: int
@@ -174,14 +160,14 @@ def update_element(modelid, id, model_element_update):  # noqa: E501
     :rtype: ModelElement
     """
     if connexion.request.is_json:
-        model_element_update = ModelElementUpdate.from_dict(connexion.request.get_json())  # noqa: E501
+        model_element_update = ModelElementUpdate.from_dict(
+            connexion.request.get_json())
     return 'do some magic!'
 
 
-def update_model(id, model_update):  # noqa: E501
+def update_model(id, model_update):
     """Update a network model
 
-     # noqa: E501
 
     :param id: Model id
     :type id: int
@@ -191,7 +177,7 @@ def update_model(id, model_update):  # noqa: E501
     :rtype: Model
     """
     if connexion.request.is_json:
-        model_update = ModelUpdate.from_dict(connexion.request.get_json())  # noqa: E501
+        model_update = ModelUpdate.from_dict(connexion.request.get_json())
     return 'do some magic!'
 
 
