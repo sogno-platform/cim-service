@@ -8,6 +8,7 @@ RUN apk add --no-cache --virtual .build-deps gcc libc-dev libxslt-dev && \
     apk del .build-deps
 
 RUN pip3 install --no-cache-dir pytest webtest
+RUN pip3 install --no-cache-dir flake8
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app

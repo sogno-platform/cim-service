@@ -18,10 +18,19 @@ docker:
         - linux
 
 
-test:
+unit-test:
     stage: test
     script:
-        - pytest
+        - pytest -v -cov
+    image: ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV}
+    tags:
+        - docker
+
+format:
+    stage: lint
+    allow_failure: true
+    script:
+        - flake8 --statistics
     image: ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV}
     tags:
         - docker
