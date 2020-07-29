@@ -4,7 +4,7 @@ import connexion
 from flask_testing import TestCase
 
 #  from ...server import create_server
-from server import encoder
+from encoder import JSONEncoder
 
 
 class BaseTestCase(TestCase):
