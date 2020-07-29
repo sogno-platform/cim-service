@@ -1,26 +1,47 @@
+import cimpy
+import connexion
+from models import Model
+from models import NewModel
+from models import Error
+#  import pdb
+import random
+from os import urandom
 
-def add_model(new_model):  # noqa: E501
+random.seed(int.from_bytes(urandom(4), byteorder='big'))
+
+models = {}
+
+
+def add_model():
     """Add a network model
-
-     # noqa: E501
 
     :param new_model: Network model to be added
     :type new_model: dict | bytes
 
     :rtype: Model
     """
+    print("dumdidum")
     if connexion.request.is_json:
-        new_model = NewModel.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        new_model = NewModel.from_dict(connexion.request.get_json())
+        # TODO: Import the model using Cimpy
+        # generate a new UUID which is the model ID
+        newid = random.getrandbits(32)
+        # Return the model as "Model" JSON
+        new_model = Model(id=newid, name=new_model.name)
+        global models
+        models[newid] = new_model
+        return new_model
+        #  return {"name": "noname"}
 
 
-
-def get_models():  # noqa: E501
+def get_models():
     """Get all network models
 
     :rtype: str
     """
-    return 'do some magic!'
+    global models
+    # print("globalvar is %d" globalvar)
+    return models
 
 
 def add_element(modelid, new_model_element):
@@ -34,7 +55,8 @@ def add_element(modelid, new_model_element):
     :rtype: ModelElement
     """
     if connexion.request.is_json:
-        new_model_element = NewModelElement.from_dict(connexion.request.get_json())  # noqa: E501
+        new_model_element = NewModelElement.from_dict(
+            connexion.request.get_json())
     return 'do some magic!'
 
 
@@ -111,8 +133,12 @@ def get_model(id_):
 
     :rtype: Model
     """
+    global models
     print("== Model ID", id_)
-    return 'do some magic!'
+    if id_ in models:
+        return models[id_]
+    else:
+        return Error(code=404, message="Model not found")
 
 
 def get_model_image(id_):

@@ -50,8 +50,9 @@ class TestNetworkModelsController(BaseTestCase):
 
         Add a network model
         """
+        modelname = "new_testmodel"
         new_model = {
-            "name": "name"
+            "name": modelname
         }
         headers = {
             'Accept': 'application/json',
@@ -65,6 +66,44 @@ class TestNetworkModelsController(BaseTestCase):
             content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
+        returned_model = Model.from_dict(json.loads(response.get_data()))
+        assert returned_model.name == modelname
+        assert isinstance(returned_model.id, int)
+
+    def test_add_and_get_model(self):
+        """Test case for add_model
+
+        Add a network model and then get it back by id. Must be the same data
+        """
+        modelname = "new_testmodel"
+        new_model = {
+            "name": modelname
+        }
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+        # post the model
+        post_response = self.client.open(
+            '/models',
+            method='POST',
+            headers=headers,
+            data=json.dumps(new_model),
+            content_type='application/json')
+        self.assert200(post_response,
+                       'Response body is : ' + post_response.data.decode('utf-8'))
+        post_response_json = Model.from_dict(json.loads(post_response.get_data()))
+
+        # Check if model is avail
+        get_response = self.client.open(
+            '/models/{id}'.format(id=post_response_json.id),
+            method='GET',
+            headers=headers)
+        self.assert200(get_response,
+                       'Response body is : ' + get_response.data.decode('utf-8'))
+        get_response_json = Model.from_dict(json.loads(get_response.get_data()))
+        assert get_response_json == post_response_json
+
 
     def test_delete_element(self):
         """Test case for delete_element
