@@ -566,8 +566,8 @@ components:
       x-apikeyInfoFunc: cimadapter.apikey_auth
 
 # Apply the apikey globally to all operations
-security:
-  - ApiKeyAuth: []     # use the same name as under securitySchemes
+# security:
+  # - ApiKeyAuth: []     # use the same name as under securitySchemes
 
 servers:
   - description: Example server

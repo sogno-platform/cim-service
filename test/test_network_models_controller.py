@@ -37,7 +37,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Content-Type': 'application/json',
         }
         response = self.client.open(
-            '/CIM/0.0.1/models/{modelid}/elements'.format(modelid=56),
+            '/models/{modelid}/elements'.format(modelid=56),
             method='POST',
             headers=headers,
             data=json.dumps(new_model_element),
@@ -58,7 +58,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Content-Type': 'application/json',
         }
         response = self.client.open(
-            '/CIM/0.0.1/models',
+            '/models',
             method='POST',
             headers=headers,
             data=json.dumps(new_model),
@@ -75,7 +75,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Accept': 'application/json',
         }
         response = self.client.open(
-            '/CIM/0.0.1/models/{modelid}/elements/{id}'.format(
+            '/models/{modelid}/elements/{id}'.format(
                 modelid=56, id=56),
             method='DELETE',
             headers=headers)
@@ -91,7 +91,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Accept': 'application/json',
         }
         response = self.client.open(
-            '/CIM/0.0.1/models/{id}'.format(id=56),
+            '/models/{id}'.format(id=56),
             method='DELETE',
             headers=headers)
         self.assert200(response,
@@ -106,7 +106,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Accept': 'application/json',
         }
         response = self.client.open(
-            '/CIM/0.0.1/models/export/{id}'.format(id=56),
+            '/models/export/{id}'.format(id=56),
             method='GET',
             headers=headers)
         self.assert200(response,
@@ -121,7 +121,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Accept': 'application/json',
         }
         response = self.client.open(
-            '/CIM/0.0.1/models/{modelid}/elements/{id}'.format(
+            '/models/{modelid}/elements/{id}'.format(
                 modelid=56, id=56),
             method='GET',
             headers=headers)
@@ -137,7 +137,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Accept': 'application/json',
         }
         response = self.client.open(
-            '/CIM/0.0.1/models/{modelid}/elements'.format(modelid=56),
+            '/models/{modelid}/elements'.format(modelid=56),
             method='GET',
             headers=headers)
         self.assert200(response,
@@ -152,7 +152,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Accept': 'application/json',
         }
         response = self.client.open(
-            '/CIM/0.0.1/models/{id}'.format(id=56),
+            '/models/{id}'.format(id=56),
             method='GET',
             headers=headers)
         self.assert200(response,
@@ -167,7 +167,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Accept': 'application/json',
         }
         response = self.client.open(
-            '/CIM/0.0.1/models/image/{id}'.format(id=56),
+            '/models/image/{id}'.format(id=56),
             method='GET',
             headers=headers)
         self.assert200(response,
@@ -182,7 +182,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Accept': 'text/plain',
         }
         response = self.client.open(
-            '/CIM/0.0.1/models',
+            '/models',
             method='GET',
             headers=headers)
         self.assert200(response,
@@ -200,7 +200,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Content-Type': 'application/octet-stream',
         }
         response = self.client.open(
-            '/CIM/0.0.1/models/import/{id}'.format(id=56),
+            '/models/import/{id}'.format(id=56),
             method='POST',
             headers=headers,
             data=json.dumps(body),
@@ -225,7 +225,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Content-Type': 'application/json',
         }
         response = self.client.open(
-            '/CIM/0.0.1/models/{modelid}/elements/{id}'.format(
+            '/models/{modelid}/elements/{id}'.format(
                 modelid=56, id=56),
             method='PUT',
             headers=headers,
@@ -247,7 +247,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Content-Type': 'application/json',
         }
         response = self.client.open(
-            '/CIM/0.0.1/models/{id}'.format(id=56),
+            '/models/{id}'.format(id=56),
             method='PUT',
             headers=headers,
             data=json.dumps(model_update),
