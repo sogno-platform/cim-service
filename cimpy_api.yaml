@@ -14,25 +14,18 @@ paths:
         '200':
           description: OK
           content:
-            text/plain:
-              schema:
-                type: string
-                example: "hello dave!"
-            # application/json:
               # schema:
-                # type: array
-                # items:
-                  # $ref: '#/components/schemas/Model'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Model'
         default:
           description: unexpected error
           content:
-            # application/json:
-              # schema:
-                # $ref: "#/components/schemas/Error"
-            text/plain:
+            application/json:
               schema:
-                type: string
-                example: "ERRororororor"
+                $ref: "#/components/schemas/Error"
     post:
       tags:
         - Network Models
@@ -525,7 +518,6 @@ components:
         attributes:
           description: Element attributes, e.g. strings and numbers
           type: object
-          additionalProperties: {}
     NewModelElement:
       type: object
       required:
@@ -541,7 +533,6 @@ components:
         param:
           description: Element attributes, e.g. strings and numbers
           type: object
-          additionalProperties: {}
     ModelElementUpdate:
       type: object
       properties:
@@ -554,7 +545,6 @@ components:
         param:
           description: Element attributes, e.g. strings and numbers
           type: object
-          additionalProperties: {}
 
     Error:
       type: object
