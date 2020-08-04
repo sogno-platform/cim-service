@@ -28,7 +28,7 @@ def add_element(modelid, new_model_element):
     if connexion.request.is_json:
         new_model_element = NewModelElement.from_dict(
             connexion.request.get_json())
-    return 'do some magic!'
+    raise Exception('Unimplemented')
 
 
 def add_model():
@@ -79,7 +79,7 @@ def delete_element(modelid, id_):
 
     :rtype: ModelElement
     """
-    return 'do some magic!'
+    raise Exception('Unimplemented')
 
 
 def delete_model(id_):
@@ -90,7 +90,7 @@ def delete_model(id_):
 
     :rtype: Model
     """
-    return 'do some magic!'
+    raise Exception('Unimplemented')
 
 
 def export_model(id_):
@@ -104,7 +104,7 @@ def export_model(id_):
 
     :rtype: file
     """
-    return 'do some magic!'
+    raise Exception('Unimplemented')
 
 
 def get_element(modelid, id_):
@@ -117,7 +117,7 @@ def get_element(modelid, id_):
 
     :rtype: ModelElementAttributes
     """
-    return 'do some magic!'
+    raise Exception('Unimplemented')
 
 
 def get_elements(modelid_):
@@ -129,7 +129,7 @@ def get_elements(modelid_):
 
     :rtype: List[ModelElement]
     """
-    return 'do some magic!'
+    raise Exception('Unimplemented')
 
 
 def get_model(id_):
@@ -159,7 +159,7 @@ def get_model_image(id_):
 
     :rtype: file
     """
-    return 'do some magic!'
+    raise Exception('Unimplemented')
 
 
 def import_model(id, body):
@@ -177,7 +177,7 @@ def import_model(id, body):
 
     :rtype: Model
     """
-    return 'do some magic!'
+    raise Exception('Unimplemented')
 
 
 def update_element(modelid, id, model_element_update):
@@ -196,7 +196,7 @@ def update_element(modelid, id, model_element_update):
     if connexion.request.is_json:
         model_element_update = ModelElementUpdate.from_dict(
             connexion.request.get_json())
-    return 'do some magic!'
+    raise Exception('Unimplemented')
 
 
 def update_model(id, model_update):
@@ -212,7 +212,7 @@ def update_model(id, model_update):
     """
     if connexion.request.is_json:
         model_update = ModelUpdate.from_dict(connexion.request.get_json())
-    return 'do some magic!'
+    raise Exception('Unimplemented')
 
 
 def apikey_auth(apikey, required_scopes=None):
