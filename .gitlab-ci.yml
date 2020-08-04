@@ -5,8 +5,6 @@ variables:
 stages:
 - prepare
 - test
-- generate
-- deploy
 
 
 docker:
@@ -27,7 +25,7 @@ unit-test:
         - docker
 
 format:
-    stage: lint
+    stage: test
     allow_failure: true
     script:
         - flake8 --statistics
