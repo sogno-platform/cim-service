@@ -1,8 +1,11 @@
 import cimpy
 import connexion
-from models import Model
-from models import NewModel
 from models import Error
+from models import Model
+from models import ModelElementUpdate
+from models import ModelUpdate
+from models import NewModel
+from models import NewModelElement
 #  import pdb
 import random
 from os import urandom
@@ -10,38 +13,6 @@ from os import urandom
 random.seed(int.from_bytes(urandom(4), byteorder='big'))
 
 models = {}
-
-
-def add_model():
-    """Add a network model
-
-    :param new_model: Network model to be added
-    :type new_model: dict | bytes
-
-    :rtype: Model
-    """
-    print("dumdidum")
-    if connexion.request.is_json:
-        new_model = NewModel.from_dict(connexion.request.get_json())
-        # TODO: Import the model using Cimpy
-        # generate a new UUID which is the model ID
-        newid = random.getrandbits(32)
-        # Return the model as "Model" JSON
-        new_model = Model(id=newid, name=new_model.name)
-        global models
-        models[newid] = new_model
-        return new_model
-        #  return {"name": "noname"}
-
-
-def get_models():
-    """Get all network models
-
-    :rtype: str
-    """
-    global models
-    # print("globalvar is %d" globalvar)
-    return models
 
 
 def add_element(modelid, new_model_element):
@@ -58,6 +29,43 @@ def add_element(modelid, new_model_element):
         new_model_element = NewModelElement.from_dict(
             connexion.request.get_json())
     return 'do some magic!'
+
+
+def add_model():
+    """Add a network model
+
+    :param name: 
+    :type name: str
+    :param file: 
+    :type file: str
+
+    :rtype: Model
+    """
+    print("dumdidum")
+    request = connexion.request
+    cim_xml = request.files['file']
+    id = request.form["name"]
+    new_model = NewModel(name=id, file=cim_xml)
+    # TODO: Import the model using Cimpy
+    # generate a new UUID which is the model ID
+    newid = random.getrandbits(32)
+    # Return the model as "Model" JSON
+    new_model = Model(id=newid, name=new_model.name)
+    global models
+    models[newid] = new_model
+    return new_model
+    #  return {"name": "noname"}
+
+
+def get_models():
+    """Get all network models
+
+    :rtype: str
+    """
+    global models
+    # print("globalvar is %d" globalvar)
+    return models
+
 
 
 def delete_element(modelid, id_):

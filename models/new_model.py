@@ -15,21 +15,26 @@ class NewModel(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None):  # noqa: E501
+    def __init__(self, name=None, file=None):  # noqa: E501
         """NewModel - a model defined in OpenAPI
 
         :param name: The name of this NewModel.  # noqa: E501
         :type name: str
+        :param file: The file of this NewModel.  # noqa: E501
+        :type file: file
         """
         self.openapi_types = {
-            'name': str
+            'name': str,
+            'file': file
         }
 
         self.attribute_map = {
-            'name': 'name'
+            'name': 'name',
+            'file': 'file'
         }
 
         self._name = name
+        self._file = file
 
     @classmethod
     def from_dict(cls, dikt) -> 'NewModel':
@@ -64,3 +69,26 @@ class NewModel(Model):
             raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
 
         self._name = name
+
+    @property
+    def file(self):
+        """Gets the file of this NewModel.
+
+
+        :return: The file of this NewModel.
+        :rtype: file
+        """
+        return self._file
+
+    @file.setter
+    def file(self, file):
+        """Sets the file of this NewModel.
+
+
+        :param file: The file of this NewModel.
+        :type file: file
+        """
+        if file is None:
+            raise ValueError("Invalid value for `file`, must not be `None`")  # noqa: E501
+
+        self._file = file

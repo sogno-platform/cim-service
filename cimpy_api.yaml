@@ -35,7 +35,7 @@ paths:
         description: Network model to be added
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/NewModel'
       responses:
@@ -478,9 +478,13 @@ components:
       type: object
       required:
         - name
+        - file
       properties:
         name:
           type: string
+        file:
+          type: string
+          format: binary
     ModelUpdate:
       type: object
       properties:
@@ -493,7 +497,7 @@ components:
         id:
           type: integer
         uuid:
-          description: CIM uuid of model element
+          description: CIM UUID of model element
           type: string
         name:
           description: Name of model element
@@ -507,7 +511,7 @@ components:
         id:
           type: integer
         uuid:
-          description: CIM uuid of model element
+          description: CIM UUID of model element
           type: string
         name:
           description: Name of model element
