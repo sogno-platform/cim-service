@@ -50,60 +50,74 @@ class TestNetworkModelsController(BaseTestCase):
 
         Add a network model
         """
-        modelname = "new_testmodel"
-        new_model = {
-            "name": modelname
-        }
-        headers = {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        }
+        cim_xml = open(
+            "test/sampledata/CIGRE_MV/Rootnet_FULL_NE_24J13h_DI.xml", "rb")
+        modelname = "test_rootnet_full_ne_24j13h_di"
         response = self.client.open(
             '/models',
             method='POST',
-            headers=headers,
-            data=json.dumps(new_model),
-            content_type='application/json')
+            data={'name': modelname, 'file': cim_xml},
+            content_type='multipart/form-data')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
         returned_model = Model.from_dict(json.loads(response.get_data()))
         assert returned_model.name == modelname
         assert isinstance(returned_model.id, int)
 
+    def test_add_model_faulty(self):
+        """Test case for add_model
+
+        Post faulty requests and expect error responses
+        """
+        response = self.client.open(
+            '/models',
+            method='POST',
+            data={'name': 'no_file'},
+            content_type='multipart/form-data')
+        print(self.assert400(response,
+                             'Response body is : ' + response.data.decode('utf-8')))
+
+        cim_xml = open("test/sampledata/Broken_CIM.xml", "rb")
+        response = self.client.open(
+            '/models',
+            method='POST',
+            data={'name': "broken_xml", 'file': cim_xml},
+            content_type='multipart/form-data')
+        print(self.assert400(response,
+                             'Response body is : ' + response.data.decode('utf-8')))
+
     def test_add_and_get_model(self):
         """Test case for add_model
 
         Add a network model and then get it back by id. Must be the same data
         """
-        modelname = "new_testmodel"
-        new_model = {
-            "name": modelname
-        }
+        cim_xml = open(
+            "test/sampledata/CIGRE_MV/Rootnet_FULL_NE_24J13h_DI.xml", "rb")
+        modelname = "test_rootnet_full_ne_24j13h_di"
+        post_response = self.client.open(
+            '/models',
+            method='POST',
+            data={'name': modelname, 'file': cim_xml},
+            content_type='multipart/form-data')
+        self.assert200(post_response,
+                       'Response is : ' + post_response.data.decode('utf-8'))
+        post_response_json = Model.from_dict(
+            json.loads(post_response.get_data()))
+
+        # Check if model is avail
         headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
         }
-        # post the model
-        post_response = self.client.open(
-            '/models',
-            method='POST',
-            headers=headers,
-            data=json.dumps(new_model),
-            content_type='application/json')
-        self.assert200(post_response,
-                       'Response body is : ' + post_response.data.decode('utf-8'))
-        post_response_json = Model.from_dict(json.loads(post_response.get_data()))
-
-        # Check if model is avail
         get_response = self.client.open(
             '/models/{id}'.format(id=post_response_json.id),
             method='GET',
             headers=headers)
         self.assert200(get_response,
-                       'Response body is : ' + get_response.data.decode('utf-8'))
-        get_response_json = Model.from_dict(json.loads(get_response.get_data()))
+                       'Response is : ' + get_response.data.decode('utf-8'))
+        get_response_json = Model.from_dict(
+            json.loads(get_response.get_data()))
         assert get_response_json == post_response_json
-
 
     def test_delete_element(self):
         """Test case for delete_element
@@ -227,7 +241,6 @@ class TestNetworkModelsController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    @unittest.skip("Connexion does not support multiple consummes. See https://github.com/zalando/connexion/pull/760")
     def test_import_model(self):
         """Test case for import_model
 
