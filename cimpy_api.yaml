@@ -509,6 +509,7 @@ components:
         type:
           description: CIM type of model element
           type: string
+
     ModelElementAttributes:
       type: object
       properties:
@@ -526,6 +527,7 @@ components:
         attributes:
           description: Element attributes, e.g. strings and numbers
           type: object
+
     NewModelElement:
       type: object
       required:
@@ -541,6 +543,7 @@ components:
         param:
           description: Element attributes, e.g. strings and numbers
           type: object
+
     ModelElementUpdate:
       type: object
       properties:

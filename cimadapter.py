@@ -65,7 +65,6 @@ def get_models():
     return models
 
 
-
 def delete_element(modelid, id_):
     """Delete element of model
 

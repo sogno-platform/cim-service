@@ -102,7 +102,7 @@ class TestNetworkModelsController(BaseTestCase):
             data={'name': 'no_file'},
             content_type='multipart/form-data')
         self.assert400(response,
-                             'Response body is : ' + response.data.decode('utf-8'))
+                       'Response body is : ' + response.data.decode('utf-8'))
 
         cim_xml = open("test/sampledata/Broken_CIM.xml", "rb")
         response = self.client.open(
