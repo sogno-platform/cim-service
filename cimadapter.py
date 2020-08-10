@@ -9,6 +9,7 @@ from models import NewModelElement
 #  import pdb
 import random
 from os import urandom
+from xml.etree.ElementTree import ParseError
 
 random.seed(int.from_bytes(urandom(4), byteorder='big'))
 
@@ -32,20 +33,18 @@ def add_element(modelid, new_model_element):
 
 
 def add_model():
-    """Add a network model
-
-    :param name: 
-    :type name: str
-    :param file: 
-    :type file: str
-
-    :rtype: Model
+    """Add a new network model
     """
     print("dumdidum")
+
     request = connexion.request
-    cim_xml = request.files['file']
+    cim_xml = request.files.getlist("files")
     id = request.form["name"]
-    new_model = NewModel(name=id, file=cim_xml)
+
+    try:
+        new_model = NewModel(name=id, files=cim_xml)
+    except ParseError:
+        return Error(code=400, message="Invalid XML files"), 400
     # TODO: Import the model using Cimpy
     # generate a new UUID which is the model ID
     newid = random.getrandbits(32)
@@ -54,7 +53,6 @@ def add_model():
     global models
     models[newid] = new_model
     return new_model
-    #  return {"name": "noname"}
 
 
 def get_models():

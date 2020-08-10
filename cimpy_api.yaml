@@ -474,17 +474,21 @@ components:
         name:
           description: Name of simulation model
           type: string
+
     NewModel:
       type: object
       required:
         - name
-        - file
+        - files
       properties:
         name:
           type: string
-        file:
-          type: string
-          format: binary
+        files:
+          type: array
+          items:
+            type: string
+            format: binary
+
     ModelUpdate:
       type: object
       properties:

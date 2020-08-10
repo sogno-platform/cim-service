@@ -15,7 +15,8 @@ def main():
                 options=options,
                 arguments={'title': 'ANM4L API'},
                 resolver=Resolver(),
-                pythonic_params=True)
+                pythonic_params=True,
+                validate_responses=True)
     app.run(port=8080)
 
 

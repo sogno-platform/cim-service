@@ -56,7 +56,34 @@ class TestNetworkModelsController(BaseTestCase):
         response = self.client.open(
             '/models',
             method='POST',
-            data={'name': modelname, 'file': cim_xml},
+            data={'name': modelname, 'files': cim_xml},
+            content_type='multipart/form-data')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+        returned_model = Model.from_dict(json.loads(response.get_data()))
+        assert returned_model.name == modelname
+        assert isinstance(returned_model.id, int)
+
+    def test_add_models(self):
+        """Test case for add_model
+
+        Add a network model
+        """
+        cim_xml = [
+            open("test/sampledata/CIGRE_MV/Rootnet_FULL_NE_24J13h_DI.xml",
+                 "rb"),
+            open("test/sampledata/CIGRE_MV/Rootnet_FULL_NE_24J13h_EQ.xml",
+                 "rb"),
+            open("test/sampledata/CIGRE_MV/Rootnet_FULL_NE_24J13h_SV.xml",
+                 "rb"),
+            open("test/sampledata/CIGRE_MV/Rootnet_FULL_NE_24J13h_TP.xml",
+                 "rb")
+        ]
+        modelname = "test_rootnet_full_ne_24j13h"
+        response = self.client.open(
+            '/models',
+            method='POST',
+            data={'name': modelname, 'files': cim_xml},
             content_type='multipart/form-data')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -74,8 +101,8 @@ class TestNetworkModelsController(BaseTestCase):
             method='POST',
             data={'name': 'no_file'},
             content_type='multipart/form-data')
-        print(self.assert400(response,
-                             'Response body is : ' + response.data.decode('utf-8')))
+        self.assert400(response,
+                             'Response body is : ' + response.data.decode('utf-8'))
 
         cim_xml = open("test/sampledata/Broken_CIM.xml", "rb")
         response = self.client.open(
@@ -85,6 +112,19 @@ class TestNetworkModelsController(BaseTestCase):
             content_type='multipart/form-data')
         print(self.assert400(response,
                              'Response body is : ' + response.data.decode('utf-8')))
+
+        cim_xml = [
+            open("test/sampledata/testfile1.txt", "rb"),
+            open("test/sampledata/testfile2.txt", "rb")
+        ]
+        modelname = "test_rootnet_full_ne_24j13h"
+        response = self.client.open(
+            '/models',
+            method='POST',
+            data={'name': modelname, 'files': cim_xml},
+            content_type='multipart/form-data')
+        self.assert400(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
 
     def test_add_and_get_model(self):
         """Test case for add_model
