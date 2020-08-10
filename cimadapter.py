@@ -1,5 +1,6 @@
 import cimpy
 import connexion
+import json
 from models import Error
 from models import Model
 from models import ModelElementUpdate
@@ -56,13 +57,17 @@ def add_model():
 
 
 def get_models():
-    """Get all network models
+    """Get a list of all network models
 
-    :rtype: str
+    :rtype: dict
     """
     global models
-    # print("globalvar is %d" globalvar)
-    return models
+    if models == {}:
+        return Error(code=404, message="No models in to database"), 404
+    model_list = []
+    for m, v in models.items():
+        model_list.append(v.to_dict())
+    return model_list
 
 
 def delete_element(modelid, id_):

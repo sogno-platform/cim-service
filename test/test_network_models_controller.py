@@ -274,12 +274,47 @@ class TestNetworkModelsController(BaseTestCase):
         headers = {
             'Accept': 'text/plain',
         }
+
+        # Add two models
+        cim_xml = open(
+            "test/sampledata/CIGRE_MV/Rootnet_FULL_NE_24J13h_DI.xml", "rb")
+        modelname1 = "testmodel1"
+        response = self.client.open(
+            '/models',
+            method='POST',
+            data={'name': modelname1, 'files': cim_xml},
+            content_type='multipart/form-data')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+        id1 = json.loads(response.data)["id"]
+
+        cim_xml = open(
+            "test/sampledata/CIGRE_MV/Rootnet_FULL_NE_24J13h_DI.xml", "rb")
+        modelname2 = "testmodel2"
+        response = self.client.open(
+            '/models',
+            method='POST',
+            data={'name': modelname2, 'files': cim_xml},
+            content_type='multipart/form-data')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+        id2 = json.loads(response.data)["id"]
+
+        # Now check the model list
         response = self.client.open(
             '/models',
             method='GET',
             headers=headers)
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+        models = json.loads(response.data)
+
+        model_dict = {}
+        for m in models:
+            model_dict[m["id"]] = m["name"]
+
+        assert model_dict[id1] == modelname1
+        assert model_dict[id2] == modelname2
+
+
 
     def test_import_model(self):
         """Test case for import_model
