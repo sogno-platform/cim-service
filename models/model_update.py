@@ -15,21 +15,26 @@ class ModelUpdate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None):  # noqa: E501
+    def __init__(self, name=None, files=None):  # noqa: E501
         """ModelUpdate - a model defined in OpenAPI
 
         :param name: The name of this ModelUpdate.  # noqa: E501
         :type name: str
+        :param files: The files of this ModelUpdate.  # noqa: E501
+        :type files: List[file]
         """
         self.openapi_types = {
-            'name': str
+            'name': str,
+            'files': List[file]
         }
 
         self.attribute_map = {
-            'name': 'name'
+            'name': 'name',
+            'files': 'files'
         }
 
         self._name = name
+        self._files = files
 
     @classmethod
     def from_dict(cls, dikt) -> 'ModelUpdate':
@@ -62,3 +67,24 @@ class ModelUpdate(Model):
         """
 
         self._name = name
+
+    @property
+    def files(self):
+        """Gets the files of this ModelUpdate.
+
+
+        :return: The files of this ModelUpdate.
+        :rtype: List[file]
+        """
+        return self._files
+
+    @files.setter
+    def files(self, files):
+        """Sets the files of this ModelUpdate.
+
+
+        :param files: The files of this ModelUpdate.
+        :type files: List[file]
+        """
+
+        self._files = files

@@ -23,7 +23,6 @@ class NewModel(Model):
         :param files: The files of this NewModel.  # noqa: E501
         :type files: List[file]
         """
-
         self.openapi_types = {
             'name': str,
             'files': List[str]

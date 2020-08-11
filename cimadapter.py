@@ -18,11 +18,11 @@ random.seed(int.from_bytes(urandom(4), byteorder='big'))
 models = Datastorage()
 
 
-def add_element(modelid, new_model_element):
+def add_element(id, new_model_element):
     """Add element to model
 
-    :param modelid: Model id
-    :type modelid: int
+    :param id: Model id
+    :type id: int
     :param new_model_element: Element to be added to model
     :type new_model_element: dict | bytes
 
@@ -69,12 +69,12 @@ def get_models():
     return model_list
 
 
-def delete_element(modelid, id_):
+def delete_element(id, id_):
     """Delete element of model
 
 
-    :param modelid: model id
-    :type modelid: int
+    :param id: model id
+    :type id: int
     :param id: element id
     :type id: int
 
@@ -108,11 +108,11 @@ def export_model(id_):
     raise Exception('Unimplemented')
 
 
-def get_element(modelid, id_):
+def get_element(id, id_):
     """Get element of model
 
-    :param modelid: Model id
-    :type modelid: int
+    :param id: Model id
+    :type id: int
     :param id: Element id
     :type id: int
 
@@ -121,12 +121,12 @@ def get_element(modelid, id_):
     raise Exception('Unimplemented')
 
 
-def get_elements(modelid_):
+def get_elements(id_):
     """Get all elements of a model
 
 
-    :param modelid: Model id
-    :type modelid: int
+    :param id: Model id
+    :type id: int
 
     :rtype: List[ModelElement]
     """
@@ -180,14 +180,14 @@ def import_model(id, body):
     raise Exception('Unimplemented')
 
 
-def update_element(modelid, id, model_element_update):
+def update_element(id, elem_id, model_element_update):
     """Update element of model
 
 
-    :param modelid: model id
-    :type modelid: int
-    :param id: element id
+    :param id: model id
     :type id: int
+    :param elem_id: element id
+    :type elem_id: int
     :param model_element_update: Model Element attributes to be updated
     :type model_element_update: dict | bytes
 

@@ -37,7 +37,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Content-Type': 'application/json',
         }
         response = self.client.open(
-            '/models/{modelid}/elements'.format(modelid=56),
+            '/models/{id}/elements'.format(id=56),
             method='POST',
             headers=headers,
             data=json.dumps(new_model_element),
@@ -50,12 +50,17 @@ class TestNetworkModelsController(BaseTestCase):
 
         Add a network model
         """
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'multipart/form-data',
+        }
         cim_xml = open(
             "test/sampledata/CIGRE_MV/Rootnet_FULL_NE_24J13h_DI.xml", "rb")
         modelname = "test_rootnet_full_ne_24j13h_di"
         response = self.client.open(
             '/models',
             method='POST',
+            headers=headers,
             data={'name': modelname, 'files': cim_xml},
             content_type='multipart/form-data')
         self.assert200(response,
@@ -168,8 +173,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Accept': 'application/json',
         }
         response = self.client.open(
-            '/models/{modelid}/elements/{id}'.format(
-                modelid=56, id=56),
+            '/models/{id}/elements/{elem_id}'.format(id=56, elem_id=56),
             method='DELETE',
             headers=headers)
         self.assert200(response,
@@ -199,7 +203,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Accept': 'application/json',
         }
         response = self.client.open(
-            '/models/export/{id}'.format(id=56),
+            '/models/{id}/export'.format(id=56),
             method='GET',
             headers=headers)
         self.assert200(response,
@@ -214,8 +218,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Accept': 'application/json',
         }
         response = self.client.open(
-            '/models/{modelid}/elements/{id}'.format(
-                modelid=56, id=56),
+            '/models/{id}/elements/{elem_id}'.format(id=56, elem_id=56),
             method='GET',
             headers=headers)
         self.assert200(response,
@@ -230,7 +233,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Accept': 'application/json',
         }
         response = self.client.open(
-            '/models/{modelid}/elements'.format(modelid=56),
+            '/models/{id}/elements'.format(id=56),
             method='GET',
             headers=headers)
         self.assert200(response,
@@ -260,7 +263,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Accept': 'application/json',
         }
         response = self.client.open(
-            '/models/image/{id}'.format(id=56),
+            '/models/{id}/image'.format(id=56),
             method='GET',
             headers=headers)
         self.assert200(response,
@@ -272,7 +275,7 @@ class TestNetworkModelsController(BaseTestCase):
         Get all network models
         """
         headers = {
-            'Accept': 'text/plain',
+            'Accept': 'application/json',
         }
 
         # Add two models
@@ -327,7 +330,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Content-Type': 'application/octet-stream',
         }
         response = self.client.open(
-            '/models/import/{id}'.format(id=56),
+            '/models/{id}/import'.format(id=56),
             method='POST',
             headers=headers,
             data=json.dumps(body),
@@ -352,8 +355,7 @@ class TestNetworkModelsController(BaseTestCase):
             'Content-Type': 'application/json',
         }
         response = self.client.open(
-            '/models/{modelid}/elements/{id}'.format(
-                modelid=56, id=56),
+            '/models/{id}/elements/{elem_id}'.format(id=56, elem_id=56),
             method='PUT',
             headers=headers,
             data=json.dumps(model_element_update),
@@ -366,19 +368,18 @@ class TestNetworkModelsController(BaseTestCase):
 
         Update a network model
         """
-        model_update = {
-            "name": "name"
-        }
         headers = {
             'Accept': 'application/json',
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
         }
+        data = dict(name='name_example',
+                    files=(BytesIO(b'some file data'), 'file.txt'))
         response = self.client.open(
             '/models/{id}'.format(id=56),
             method='PUT',
             headers=headers,
-            data=json.dumps(model_update),
-            content_type='application/json')
+            data=data,
+            content_type='multipart/form-data')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

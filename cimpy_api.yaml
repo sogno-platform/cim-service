@@ -1,9 +1,10 @@
 openapi: 3.0.0
 info:
-  version: 0.0.1
+  version: 0.0.2
   title: ANM4L API
   description: ''
 paths:
+
   /models:
     get:
       tags:
@@ -51,6 +52,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
   /models/{id}:
     get:
       tags:
@@ -93,7 +95,7 @@ paths:
         description: Network model to be updated
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/ModelUpdate'
       responses:
@@ -135,11 +137,12 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /models/import/{id}:
+  /models/{id}/import:
     post:
       tags:
         - Network Models
       summary: Import model from file
+      # TODO: Discuss about the ZIP archive. Maybe allow both
       description: >-
         The input file should be an archive containing the grid data
         in the CIM format. Optionally, profiles or stochastic parameters can be
@@ -161,9 +164,10 @@ paths:
             schema:
               type: string
               format: binary
-          text/uri-list:
-            schema:
-              type: string
+          # TODO: figure out how this can be done in connexion
+          # text/uri-list:
+          #   schema:
+          #     type: string
       responses:
         '200':
           description: OK
@@ -178,7 +182,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /models/export/{id}:
+  /models/{id}/export:
     get:
       tags:
         - Network Models
@@ -203,10 +207,11 @@ paths:
                 description: archive containing the CIM files
                 type: string
                 format: binary
-            text/uri-list:
-              schema:
-                description: link to archive containing the CIM files
-                type: string
+            # TODO: figure out how this can be done in connexion
+            # text/uri-list:
+            #   schema:
+            #     description: link to archive containing the CIM files
+            #     type: string
         default:
           description: unexpected error
           content:
@@ -214,7 +219,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /models/image/{id}:
+  /models/{id}/image:
     get:
       tags:
         - Network Models
@@ -238,10 +243,11 @@ paths:
                 description: image file as SVG
                 type: string
                 format: binary
-            text/uri-list:
-              schema:
-                description: link to image file as SVG
-                type: string
+            # TODO: figure out how this can be done in connexion
+            # text/uri-list:
+            #   schema:
+            #     description: link to image file as SVG
+            #     type: string
         default:
             description: unexpected error
             content:
@@ -249,14 +255,14 @@ paths:
                 schema:
                   $ref: "#/components/schemas/Error"
 
-  /models/{modelid}/elements:
+  /models/{id}/elements:
     get:
       tags:
         - Network Models
       summary: Get all elements of a model
       operationId: cimadapter.get_elements
       parameters:
-        - name: modelid
+        - name: id
           description: Model id
           in: path
           required: true
@@ -283,7 +289,7 @@ paths:
       summary: Add element to model
       operationId: cimadapter.add_element
       parameters:
-        - name: modelid
+        - name: id
           description: Model id
           in: path
           required: true
@@ -310,20 +316,20 @@ paths:
                 schema:
                   $ref: "#/components/schemas/Error"
 
-  /models/{modelid}/elements/{id}:
+  /models/{id}/elements/{elem_id}:
     get:
       tags:
         - Network Models
       summary: Get element of model
       operationId: cimadapter.get_element
       parameters:
-        - name: modelid
+        - name: id
           description: Model id
           in: path
           required: true
           schema:
             type: integer
-        - name: id
+        - name: elem_id
           description: Element id
           in: path
           required: true
@@ -348,13 +354,13 @@ paths:
       summary: Update element of model
       operationId: cimadapter.update_element
       parameters:
-        - name: modelid
+        - name: id
           description: model id
           in: path
           required: true
           schema:
             type: integer
-        - name: id
+        - name: elem_id
           description: element id
           in: path
           required: true
@@ -386,13 +392,13 @@ paths:
       summary: Delete element of model
       operationId: cimadapter.delete_element
       parameters:
-        - name: modelid
+        - name: id
           description: model id
           in: path
           required: true
           schema:
             type: integer
-        - name: id
+        - name: elem_id
           description: element id
           in: path
           required: true
@@ -494,6 +500,11 @@ components:
       properties:
         name:
           type: string
+        files:
+          type: array
+          items:
+            type: string
+            format: binary
 
     ModelElement:
       type: object
