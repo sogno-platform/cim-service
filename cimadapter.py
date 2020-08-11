@@ -1,6 +1,7 @@
 import cimpy
 import connexion
 import json
+from datastorage import Datastorage
 from models import Error
 from models import Model
 from models import ModelElementUpdate
@@ -14,7 +15,7 @@ from xml.etree.ElementTree import ParseError
 
 random.seed(int.from_bytes(urandom(4), byteorder='big'))
 
-models = {}
+models = Datastorage()
 
 
 def add_element(modelid, new_model_element):
@@ -36,19 +37,23 @@ def add_element(modelid, new_model_element):
 def add_model():
     """Add a new network model
     """
+    global models
+
     try:
         new_model = NewModel.from_request(connexion.request)
     except ParseError:
         return Error(code=400, message="Invalid XML files"), 400
     # TODO: Import the model using Cimpy
+
     # generate a new UUID which is the model ID
-    newid = random.getrandbits(32)
-    # TODO: Ensure ID is unique
+    new_id = random.getrandbits(32)
+    # Ensure ID is unique
+    while models.contains(new_id):
+        new_id = random.getrandbits(32)
+
     # Return the model as "Model" JSON
-    new_model = Model(id=newid, name=new_model.name)
-    global models
-    models[newid] = new_model
-    return new_model
+    models.insert(new_id, new_model.name, new_model.files)
+    return Model(new_id, new_model.name)
 
 
 def get_models():
@@ -57,11 +62,10 @@ def get_models():
     :rtype: dict
     """
     global models
-    if models == {}:
+    try:
+        model_list = models.get_model_list()
+    except RuntimeError:
         return Error(code=404, message="No models in to database"), 404
-    model_list = []
-    for m, v in models.items():
-        model_list.append(v.to_dict())
     return model_list
 
 
@@ -139,10 +143,9 @@ def get_model(id_):
     :rtype: Model
     """
     global models
-    print("== Model ID", id_)
-    if id_ in models:
-        return models[id_]
-    else:
+    try:
+        return models.get_model(id_)
+    except KeyError:
         return Error(code=404, message="Model not found")
 
 
