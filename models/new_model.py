@@ -54,9 +54,9 @@ class NewModel(Model):
         for f in req_files:
             # name = os.path.basename(f.filename)
             # Validate xml input
-            ElementTree.fromstring(f.stream.read())
-            files.append(f.stream.read())
-
+            filestr = f.stream.read()
+            ElementTree.fromstring(filestr)
+            files.append(filestr)
         return NewModel(id, files)
 
     @property

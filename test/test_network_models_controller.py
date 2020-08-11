@@ -137,7 +137,7 @@ class TestNetworkModelsController(BaseTestCase):
         post_response = self.client.open(
             '/models',
             method='POST',
-            data={'name': modelname, 'file': cim_xml},
+            data={'name': modelname, 'files': cim_xml},
             content_type='multipart/form-data')
         self.assert200(post_response,
                        'Response is : ' + post_response.data.decode('utf-8'))
