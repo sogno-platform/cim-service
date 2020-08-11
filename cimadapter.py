@@ -36,19 +36,14 @@ def add_element(modelid, new_model_element):
 def add_model():
     """Add a new network model
     """
-    print("dumdidum")
-
-    request = connexion.request
-    cim_xml = request.files.getlist("files")
-    id = request.form["name"]
-
     try:
-        new_model = NewModel(name=id, files=cim_xml)
+        new_model = NewModel.from_request(connexion.request)
     except ParseError:
         return Error(code=400, message="Invalid XML files"), 400
     # TODO: Import the model using Cimpy
     # generate a new UUID which is the model ID
     newid = random.getrandbits(32)
+    # TODO: Ensure ID is unique
     # Return the model as "Model" JSON
     new_model = Model(id=newid, name=new_model.name)
     global models

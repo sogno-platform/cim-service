@@ -35,23 +35,29 @@ class NewModel(Model):
         }
 
         self._name = name
-        self._files = {}
-        for f in files:
-            name = os.path.basename(f.filename)
-            # Validate xml input
-            ElementTree.fromstring(f.stream.read())
-            self._files[name] = f.stream.read()
+        self._files = files
 
     @classmethod
-    def from_dict(cls, dikt) -> 'NewModel':
+    def from_request(cls, request) -> 'NewModel':
         """Returns the dict as a model
-
-        :param dikt: A dict.
-        :type: dict
+        Throws a ElementTree.ParseError when the request does not contain valid
+        xml code
+        :param request: A flask request
+        :type: 
         :return: The NewModel of this NewModel.  # noqa: E501
         :rtype: NewModel
         """
-        return util.deserialize_model(dikt, cls)
+
+        req_files = request.files.getlist("files")
+        id = request.form["name"]
+        files = []
+        for f in req_files:
+            # name = os.path.basename(f.filename)
+            # Validate xml input
+            ElementTree.fromstring(f.stream.read())
+            files.append(f.stream.read())
+
+        return NewModel(id, files)
 
     @property
     def name(self):
