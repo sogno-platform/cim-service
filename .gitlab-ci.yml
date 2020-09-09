@@ -19,10 +19,13 @@ docker:
 unit-test:
     stage: test
     script:
-        - pytest -v -cov
+        - pytest -v -cov --junitxml=report.xml
     image: ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV}
     tags:
         - docker
+    artifacts:
+        reports:
+            junit: report.xml
 
 format:
     stage: test
