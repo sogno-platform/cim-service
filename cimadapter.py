@@ -104,7 +104,14 @@ def delete_model(id_):
 
     :rtype: Model
     """
-    raise Exception('Unimplemented')
+    global models
+
+    if str(id_) in models:
+        model = Model.from_dict({'name': models[str(id_)].name, 'id': id_})
+        del models[str(id_)]
+        return model
+    else:
+        return Error(code=404, message="No models in to database"), 404
 
 
 def export_model(id_):
