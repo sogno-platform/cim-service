@@ -1,13 +1,12 @@
 import cimpy
 import connexion
-import json
 import shelve
 from models import Error
 from models import Model
-from models import ModelElementUpdate
-from models import ModelUpdate
+# from models import ModelElementUpdate
+# from models import ModelUpdate
 from models import NewModel
-from models import NewModelElement
+# from models import NewModelElement
 from dataclasses import dataclass
 #  import pdb
 import random
@@ -37,9 +36,9 @@ def add_element(id, new_model_element):
 
     :rtype: ModelElement
     """
-    if connexion.request.is_json:
-        new_model_element = NewModelElement.from_dict(
-            connexion.request.get_json())
+    # if connexion.request.is_json:
+    #     new_model_element = NewModelElement.from_dict(
+    #         connexion.request.get_json())
     raise Exception('Unimplemented')
 
 
@@ -213,9 +212,9 @@ def update_element(id, elem_id, model_element_update):
 
     :rtype: ModelElement
     """
-    if connexion.request.is_json:
-        model_element_update = ModelElementUpdate.from_dict(
-            connexion.request.get_json())
+    # if connexion.request.is_json:
+    #     model_element_update = ModelElementUpdate.from_dict(
+    #         connexion.request.get_json())
     raise Exception('Unimplemented')
 
 
@@ -230,8 +229,8 @@ def update_model(id, model_update):
 
     :rtype: Model
     """
-    if connexion.request.is_json:
-        model_update = ModelUpdate.from_dict(connexion.request.get_json())
+    # if connexion.request.is_json:
+    # model_update = ModelUpdate.from_dict(connexion.request.get_json())
     raise Exception('Unimplemented')
 
 

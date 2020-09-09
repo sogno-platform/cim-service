@@ -6,14 +6,14 @@ import unittest
 from flask import json
 from six import BytesIO
 
-from models.error import Error  # noqa: E501
+# from models.error import Error  # noqa: E501
 from models.model import Model  # noqa: E501
-from models.model_element import ModelElement  # noqa: E501
-from models.model_element_attributes import ModelElementAttributes  # noqa: E501
-from models.model_element_update import ModelElementUpdate  # noqa: E501
-from models.model_update import ModelUpdate  # noqa: E501
-from models.new_model import NewModel  # noqa: E501
-from models.new_model_element import NewModelElement  # noqa: E501
+# from models.model_element import ModelElement  # noqa: E501
+# from models.model_element_attributes import ModelElementAttributes  # noqa: E501
+# from models.model_element_update import ModelElementUpdate  # noqa: E501
+# from models.model_update import ModelUpdate  # noqa: E501
+# from models.new_model import NewModel  # noqa: E501
+# from models.new_model_element import NewModelElement  # noqa: E501
 from test.basetestcase import BaseTestCase
 import cimadapter
 
@@ -49,7 +49,7 @@ class TestNetworkModelsController(BaseTestCase):
             data=json.dumps(new_model_element),
             content_type='application/json')
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
 
     def test_add_model(self):
         """Test case for add_model
@@ -70,7 +70,7 @@ class TestNetworkModelsController(BaseTestCase):
             data={'name': modelname, 'files': cim_xml},
             content_type='multipart/form-data')
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
         returned_model = Model.from_dict(json.loads(response.get_data()))
         assert returned_model.name == modelname
         assert isinstance(returned_model.id, int)
@@ -97,7 +97,7 @@ class TestNetworkModelsController(BaseTestCase):
             data={'name': modelname, 'files': cim_xml},
             content_type='multipart/form-data')
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
         returned_model = Model.from_dict(json.loads(response.get_data()))
         assert returned_model.name == modelname
         assert isinstance(returned_model.id, int)
@@ -113,7 +113,7 @@ class TestNetworkModelsController(BaseTestCase):
             data={'name': 'no_file'},
             content_type='multipart/form-data')
         self.assert400(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
 
         cim_xml = open("test/sampledata/Broken_CIM.xml", "rb")
         response = self.client.open(
@@ -122,7 +122,7 @@ class TestNetworkModelsController(BaseTestCase):
             data={'name': "broken_xml", 'file': cim_xml},
             content_type='multipart/form-data')
         print(self.assert400(response,
-                             'Response body is : ' + response.data.decode('utf-8')))
+                             'Response is: ' + response.data.decode('utf-8')))
 
         cim_xml = [
             open("test/sampledata/testfile1.txt", "rb"),
@@ -135,7 +135,7 @@ class TestNetworkModelsController(BaseTestCase):
             data={'name': modelname, 'files': cim_xml},
             content_type='multipart/form-data')
         self.assert400(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
 
     def test_add_and_get_model(self):
         """Test case for add_model
@@ -183,7 +183,7 @@ class TestNetworkModelsController(BaseTestCase):
             method='DELETE',
             headers=headers)
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
 
     def test_delete_model(self):
         """Test case for delete_model
@@ -201,7 +201,7 @@ class TestNetworkModelsController(BaseTestCase):
             method='DELETE',
             headers=headers)
         self.assert404(faulty_response,
-                       'Response body is : ' + faulty_response.data.decode('utf-8'))
+                       'Response is: ' + faulty_response.data.decode('utf-8'))
 
         cimadapter.models["1111"] = cimadapter.record(name=testname, cimobj={})
         response = self.client.open(
@@ -209,7 +209,7 @@ class TestNetworkModelsController(BaseTestCase):
             method='DELETE',
             headers=headers)
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
 
         returned_model = Model.from_dict(
             json.loads(response.get_data()))
@@ -243,7 +243,7 @@ class TestNetworkModelsController(BaseTestCase):
             method='DELETE',
             headers=headers)
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
 
         returned_model = Model.from_dict(
             json.loads(response.get_data()))
@@ -254,10 +254,7 @@ class TestNetworkModelsController(BaseTestCase):
             method='DELETE',
             headers=headers)
         self.assert404(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
-
-
+                       'Response is: ' + response.data.decode('utf-8'))
 
     def test_export_model(self):
         """Test case for export_model
@@ -272,7 +269,7 @@ class TestNetworkModelsController(BaseTestCase):
             method='GET',
             headers=headers)
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
 
     def test_get_element(self):
         """Test case for get_element
@@ -287,7 +284,7 @@ class TestNetworkModelsController(BaseTestCase):
             method='GET',
             headers=headers)
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
 
     def test_get_elements(self):
         """Test case for get_elements
@@ -302,7 +299,7 @@ class TestNetworkModelsController(BaseTestCase):
             method='GET',
             headers=headers)
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
 
     def test_get_model(self):
         """Test case for get_model
@@ -318,16 +315,17 @@ class TestNetworkModelsController(BaseTestCase):
             headers=headers)
         # there shouldn't be any model in the data yet
         self.assert404(faulty_response,
-                       'Response body is : '
+                       'Response is: '
                        + faulty_response.data.decode('utf-8'))
 
-        cimadapter.models["123456789"] = cimadapter.record(name="testrecord", cimobj={})
+        cimadapter.models["123456789"] = cimadapter.record(
+            name="testrecord", cimobj={})
         response = self.client.open(
             '/models/{id}'.format(id=123456789),
             method='GET',
             headers=headers)
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
 
     def test_get_model_image(self):
         """Test case for get_model_image
@@ -342,7 +340,7 @@ class TestNetworkModelsController(BaseTestCase):
             method='GET',
             headers=headers)
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
 
     def test_get_models(self):
         """Test case for get_models
@@ -363,7 +361,7 @@ class TestNetworkModelsController(BaseTestCase):
             data={'name': modelname1, 'files': cim_xml},
             content_type='multipart/form-data')
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
         id1 = json.loads(response.data)["id"]
 
         cim_xml = open(
@@ -375,7 +373,7 @@ class TestNetworkModelsController(BaseTestCase):
             data={'name': modelname2, 'files': cim_xml},
             content_type='multipart/form-data')
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
         id2 = json.loads(response.data)["id"]
 
         # Now check the model list
@@ -391,8 +389,6 @@ class TestNetworkModelsController(BaseTestCase):
 
         assert model_dict[id1] == modelname1
         assert model_dict[id2] == modelname2
-
-
 
     def test_import_model(self):
         """Test case for import_model
@@ -411,7 +407,7 @@ class TestNetworkModelsController(BaseTestCase):
             data=json.dumps(body),
             content_type='application/octet-stream')
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
 
     def test_update_element(self):
         """Test case for update_element
@@ -436,7 +432,7 @@ class TestNetworkModelsController(BaseTestCase):
             data=json.dumps(model_element_update),
             content_type='application/json')
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
 
     def test_update_model(self):
         """Test case for update_model
@@ -456,7 +452,7 @@ class TestNetworkModelsController(BaseTestCase):
             data=data,
             content_type='multipart/form-data')
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       'Response is: ' + response.data.decode('utf-8'))
 
 
 if __name__ == '__main__':
