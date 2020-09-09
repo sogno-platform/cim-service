@@ -193,12 +193,71 @@ class TestNetworkModelsController(BaseTestCase):
         headers = {
             'Accept': 'application/json',
         }
+        testid = 1111
+        testname = "deltestrecord"
+        # deleting an non-existing key
+        faulty_response = self.client.open(
+            '/models/{id}'.format(id=testid),
+            method='DELETE',
+            headers=headers)
+        self.assert404(faulty_response,
+                       'Response body is : ' + faulty_response.data.decode('utf-8'))
+
+        cimadapter.models["1111"] = cimadapter.record(name=testname, cimobj={})
         response = self.client.open(
-            '/models/{id}'.format(id=56),
+            '/models/{id}'.format(id=testid),
             method='DELETE',
             headers=headers)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
+
+        returned_model = Model.from_dict(
+            json.loads(response.get_data()))
+        assert returned_model.id == testid
+        assert returned_model.name == testname
+
+    def test_add_and_delete_model(self):
+        """Test case for delete_model
+
+        Delete a network model
+        """
+        headers = {
+            'Accept': 'application/json',
+        }
+
+        cim_xml = open(
+            "test/sampledata/CIGRE_MV/Rootnet_FULL_NE_24J13h_DI.xml", "rb")
+        modelname = "test_rootnet_full_ne_24j13h_di"
+        post_response = self.client.open(
+            '/models',
+            method='POST',
+            data={'name': modelname, 'files': cim_xml},
+            content_type='multipart/form-data')
+        self.assert200(post_response,
+                       'Response is : ' + post_response.data.decode('utf-8'))
+        response_model = Model.from_dict(
+            json.loads(post_response.get_data()))
+
+        response = self.client.open(
+            '/models/{id}'.format(id=response_model.id),
+            method='DELETE',
+            headers=headers)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+        returned_model = Model.from_dict(
+            json.loads(response.get_data()))
+        assert response_model == returned_model
+
+        response = self.client.open(
+            '/models/{id}'.format(id=response_model.id),
+            method='DELETE',
+            headers=headers)
+        self.assert404(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+
+
 
     def test_export_model(self):
         """Test case for export_model
