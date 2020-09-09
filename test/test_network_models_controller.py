@@ -15,10 +15,16 @@ from models.model_update import ModelUpdate  # noqa: E501
 from models.new_model import NewModel  # noqa: E501
 from models.new_model_element import NewModelElement  # noqa: E501
 from test.basetestcase import BaseTestCase
+import cimadapter
 
 
 class TestNetworkModelsController(BaseTestCase):
     """NetworkModelsController integration test stubs"""
+
+    def setUp(arg):
+        # Replace the shelve with a dict, so that we have a clean testsetup and
+        # don't pollute the (production) database
+        cimadapter.models = {}
 
     def test_add_element(self):
         """Test case for add_element
@@ -247,8 +253,18 @@ class TestNetworkModelsController(BaseTestCase):
         headers = {
             'Accept': 'application/json',
         }
+        faulty_response = self.client.open(
+            '/models/{id}'.format(id=123456789),
+            method='GET',
+            headers=headers)
+        # there shouldn't be any model in the data yet
+        self.assert404(faulty_response,
+                       'Response body is : '
+                       + faulty_response.data.decode('utf-8'))
+
+        cimadapter.models["123456789"] = cimadapter.record(name="testrecord", cimobj={})
         response = self.client.open(
-            '/models/{id}'.format(id=56),
+            '/models/{id}'.format(id=123456789),
             method='GET',
             headers=headers)
         self.assert200(response,

@@ -1,13 +1,14 @@
 import cimpy
 import connexion
 import json
-from datastorage import Datastorage
+import shelve
 from models import Error
 from models import Model
 from models import ModelElementUpdate
 from models import ModelUpdate
 from models import NewModel
 from models import NewModelElement
+from dataclasses import dataclass
 #  import pdb
 import random
 from os import urandom
@@ -15,7 +16,15 @@ from xml.etree.ElementTree import ParseError
 
 random.seed(int.from_bytes(urandom(4), byteorder='big'))
 
-models = Datastorage()
+
+@dataclass
+class record:
+    name: str
+    cimobj: dict
+
+
+# We do not use Writeback mode here, so beware
+models = shelve.open("cimpy.db")
 
 
 def add_element(id, new_model_element):
@@ -43,16 +52,19 @@ def add_model():
         new_model = NewModel.from_request(connexion.request)
     except ParseError:
         return Error(code=400, message="Invalid XML files"), 400
-    # TODO: Import the model using Cimpy
 
     # generate a new UUID which is the model ID
     new_id = random.getrandbits(32)
     # Ensure ID is unique
-    while models.contains(new_id):
+    while str(new_id) in models:
         new_id = random.getrandbits(32)
 
+    # TODO: cgmes version?
+    cimpy_data = cimpy.cim_import(new_model.files,
+                                  cgmes_version="cgmes_v2_4_15")
+    models[str(new_id)] = record(new_model.name, cimpy_data)
+
     # Return the model as "Model" JSON
-    models.insert(new_id, new_model.name, new_model.files)
     return Model(new_id, new_model.name)
 
 
@@ -62,10 +74,11 @@ def get_models():
     :rtype: dict
     """
     global models
-    try:
-        model_list = models.get_model_list()
-    except RuntimeError:
+    if models == {}:
         return Error(code=404, message="No models in to database"), 404
+    model_list = []
+    for key, v in models.items():
+        model_list.append({'id': int(key), "name": v.name})
     return model_list
 
 
@@ -144,9 +157,9 @@ def get_model(id_):
     """
     global models
     try:
-        return models.get_model(id_)
+        return Model.from_dict({'name': models[str(id_)].name, 'id': id_})
     except KeyError:
-        return Error(code=404, message="Model not found")
+        return Error(code=404, message="Model not found"), 404
 
 
 def get_model_image(id_):
