@@ -14,5 +14,5 @@ class BaseTestCase(TestCase):
         #  return create_server()
         app = connexion.App(__name__, specification_dir='../')
         app.app.json_encoder = JSONEncoder
-        app.add_api('cimpy_api.yaml', pythonic_params=True)
+        app.add_api('openapi.yaml', pythonic_params=True)
         return app.app

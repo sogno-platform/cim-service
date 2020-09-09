@@ -11,7 +11,7 @@ def main():
     app.app.json_encoder = encoder.JSONEncoder
     options = {"swagger_ui": True}
 
-    app.add_api('cimpy_api.yaml',
+    app.add_api('openapi.yaml',
                 options=options,
                 arguments={'title': 'ANM4L API'},
                 resolver=Resolver(),
