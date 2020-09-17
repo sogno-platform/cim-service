@@ -20,12 +20,11 @@ paths:
         '200':
           description: OK
           content:
-              # schema:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Model'
+                  $ref: '#/components/schemas/ModelReply'
         default:
           description: unexpected error
           content:
@@ -43,14 +42,28 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/NewModel'
+              allOf:
+                - $ref: '#/components/schemas/Model'
+                - type: object
+                  required:
+                    - files
+                    - name
+                    - profiles
+                    - version
+                  properties:
+                    files:
+                      type: array
+                      description: List of cim-xml files
+                      items:
+                        type: string
+                        format: binary
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Model'
+                $ref: '#/components/schemas/ModelReply'
         default:
           description: unexpected error
           content:
@@ -77,7 +90,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Model'
+                $ref: '#/components/schemas/ModelReply'
         default:
           description: unexpected error
           content:
@@ -102,14 +115,24 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/ModelUpdate'
+              allOf:
+                - $ref: '#/components/schemas/Model'
+                - type: object
+                  properties:
+                    files:
+                      type: array
+                      description: List of cim-xml files
+                      items:
+                        type: string
+                        format: binary
+
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Model'
+                $ref: '#/components/schemas/ModelReply'
         default:
           description: unexpected error
           content:
@@ -134,52 +157,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Model'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-
-  /models/{id}/import:
-    post:
-      tags:
-        - Network Models
-      summary: Import model from file
-      # TODO: Discuss about the ZIP archive. Maybe allow both
-      description: >-
-        The input file should be an archive containing the grid data
-        in the CIM format. Optionally, profiles or stochastic parameters can be
-        given as additional files, where file and column name should correspond
-        to the CIM component uuid and attribute name.
-      operationId: cimadapter.import_model
-      parameters:
-        - name: id
-          description: Model id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        description: Files defining the model
-        required: true
-        content:
-          application/octet-stream:
-            schema:
-              type: string
-              format: binary
-          # TODO: figure out how this can be done in connexion
-          # text/uri-list:
-          #   schema:
-          #     type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Model'
+                $ref: '#/components/schemas/ModelReply'
         default:
           description: unexpected error
           content:
@@ -225,6 +203,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 
   /models/{id}/image:
+    # TODO: Part of DPsim
     get:
       tags:
         - Network Models
@@ -544,37 +523,35 @@ components:
   schemas:
     Model:
       type: object
+      description: Properties of a simulation model
       properties:
-        id:
-          type: integer
         name:
+          type: string
           description: Name of simulation model
-          type: string
-
-    NewModel:
-      type: object
-      required:
-        - name
-        - files
-      properties:
-        name:
-          type: string
-        files:
+        profiles:
+          description: List of cgmes profiles in the model
           type: array
           items:
-            type: string
-            format: binary
-
-    ModelUpdate:
-      type: object
-      properties:
-        name:
+            $ref: '#/components/schemas/CGMES_Profile'
+        version:
+          # TODO: Discuss this
+          description: Version string. Defaults to xyz
           type: string
-        files:
-          type: array
-          items:
-            type: string
-            format: binary
+          format: binary
+
+    ModelReply:
+      allOf:
+        - type: object
+          required:
+            - id
+            - name
+            - profiles
+            - version
+          properties:
+            id:
+              type: integer
+              description: Handle to the model
+        - $ref: '#/components/schemas/Model'
 
     ModelElement:
       type: object
@@ -715,6 +692,26 @@ components:
           format: int32
         message:
           type: string
+
+    CGMES_Profile:
+      type: string
+      enum:
+        - EQ
+        - SSH
+        - TP
+        - SV
+        - DY
+        - GL
+        - DI
+      description: >
+        Profile names:
+          * `DI` - DiagramLayout
+          * `DY` - Dynamics
+          * `EQ` - Equipment
+          * `GL` - GeographicalLocation
+          * `SV` - StateVariables
+          * `SSH` - SteadyStateHypothesis
+          * `TP` - Topology
 
   securitySchemes:
     ApiKeyAuth:
