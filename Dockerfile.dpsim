@@ -23,7 +23,8 @@ RUN dnf --refresh -y install \
 	graphviz-devel \
 	gsl-devel \
 	spdlog-devel \
-	fmt-devel
+	fmt-devel \
+	pybind11-devel
 
 # Install some debuginfos
 RUN dnf -y debuginfo-install \
@@ -43,25 +44,22 @@ RUN cd /tmp && \
 ADD requirements-dpsim.txt .
 RUN pip3 install -r requirements-dpsim.txt
 
-# Remove this part in the future and use dedicated jupyter Dockerfile
 # Activate Jupyter extensions
 RUN dnf -y --refresh install npm
 RUN jupyter nbextension enable --py widgetsnbextension
 RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
-# Build DPsim
-COPY . /dpsim/
-
-RUN rm -rf /dpsim/build && mkdir /dpsim/build
-WORKDIR /dpsim/build
-
-RUN cmake -DBUILD_EXAMPLES=OFF -DPYBIND=ON ..
-RUN make -j$(nproc) package
+# Build DPsim from source
+RUN mkdir /dpsim
+RUN cd /dpsim && \
+	git clone --recursive https://github.com/dpsim-simulator/dpsim.git && \
+	mkdir -p dpsim/build && cd dpsim/build && \
+	cmake  -DBUILD_EXAMPLES=OFF -DPYBIND=ON .. && \
+	make -j$(nproc) dpsimpy
 
 # CIMpy-Server
-
 # Install libxml dependencies
-RUN dnf -y libxslt-dev libxslt && \
+RUN dnf -y install libxslt-devel libxslt && \
     pip install --no-cache-dir lxml>=3.5.0
 
 RUN pip3 install --no-cache-dir pytest webtest
