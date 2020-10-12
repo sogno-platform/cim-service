@@ -3,22 +3,22 @@ import connexion
 import shelve
 from models import Error
 from models import Model
+from models import ModelReply
 # from models import ModelElementUpdate
 # from models import ModelUpdate
-from models import NewModel
 # from models import NewModelElement
 from dataclasses import dataclass
 #  import pdb
 import random
 from os import urandom
-from xml.etree.ElementTree import ParseError
+from xml.etree import ElementTree
 
 random.seed(int.from_bytes(urandom(4), byteorder='big'))
 
 
 @dataclass
 class record:
-    name: str
+    model: Model
     cimobj: dict
 
 
@@ -47,55 +47,54 @@ def add_model():
     """
     global models
 
+    # parse the json request
+    new_model = Model.from_dict(connexion.request.form)
     try:
-        new_model = NewModel.from_request(connexion.request)
-    except ParseError:
-        return Error(code=400, message="Invalid XML files"), 400
+        # parse the attached xml files
+        req_files = connexion.request.files.getlist("files")
+        files = []
+        for f in req_files:
+            # Validate xml input
+            filestr = f.stream.read()
+            ElementTree.fromstring(filestr)
+            f.stream.seek(0)
+            files.append(f.stream)
+    except ElementTree.ParseError:
+        return Error(code=422, message="Invalid XML files"), 422
 
-    # generate a new UUID which is the model ID
+    # generate a new UUID which will be the model ID
     new_id = random.getrandbits(32)
     # Ensure ID is unique
     while str(new_id) in models:
         new_id = random.getrandbits(32)
 
-    # TODO: cgmes version?
-    cimpy_data = cimpy.cim_import(new_model.files,
-                                  cgmes_version="cgmes_v2_4_15")
-    models[str(new_id)] = record(new_model.name, cimpy_data)
+    # create cimpy objects
+    try:
+        cimpy_data = cimpy.cim_import(files, new_model.version)
+    except Exception:
+        return Error(code=422, message="Invalid CIM files"), 422
 
-    # Return the model as "Model" JSON
-    return Model(new_id, new_model.name)
+    models[str(new_id)] = record(new_model, cimpy_data)
 
-
-def get_models():
-    """Get a list of all network models
-
-    :rtype: dict
-    """
-    global models
-    if models == {}:
-        return Error(code=404, message="No models in to database"), 404
-    model_list = []
-    for key, v in models.items():
-        model_list.append({'id': int(key), "name": v.name})
-    return model_list
+    # Return the model as `ModelReply`
+    return ModelReply.from_model(new_model, new_id)
 
 
-def delete_element(id, id_):
+def delete_element(id, elem_id):
     """Delete element of model
 
 
     :param id: model id
     :type id: int
-    :param id: element id
-    :type id: int
+    :param elem_id: element id
+    :type elem_id: int
 
     :rtype: ModelElement
     """
     raise Exception('Unimplemented')
 
 
-def delete_model(id_):
+def delete_model(id):
     """Delete a network model
 
     :param id: Model id
@@ -113,7 +112,7 @@ def delete_model(id_):
         return Error(code=404, message="No models in to database"), 404
 
 
-def export_model(id_):
+def export_model(id):
     """Export model to file
 
     Returns an archive containing the grid data in CIM formatted files and
@@ -124,23 +123,32 @@ def export_model(id_):
 
     :rtype: file
     """
-    raise Exception('Unimplemented')
+    global models
+
+    if str(id_) in models:
+        # TODO: Which Profiles? Profile in Request?
+        return cimpy.generate_xml(models[str(id_)].cimobj,
+                                  'cgmes_v2_4_15',
+                                  cimpy.cgmes_v2_4_15.Base.Profile['EQ'],
+                                  ['DI', 'EQ', 'SV', 'TP'])
+    else:
+        return Error(code=404, message="No models in to database"), 404
 
 
-def get_element(id, id_):
+def get_element(id, elem_id):
     """Get element of model
 
     :param id: Model id
     :type id: int
-    :param id: Element id
-    :type id: int
+    :param elem_id: Element id
+    :type elem_id: int
 
     :rtype: ModelElementAttributes
     """
     raise Exception('Unimplemented')
 
 
-def get_elements(id_):
+def get_elements(id):
     """Get all elements of a model
 
 
@@ -154,7 +162,7 @@ def get_elements(id_):
 
 def get_model(id_):
     """Get a network model
-
+    This is only useful at the moment to get the name of the model
 
     :param id: Model id
     :type id: int
@@ -163,43 +171,30 @@ def get_model(id_):
     """
     global models
     try:
-        return Model.from_dict({'name': models[str(id_)].name, 'id': id_})
+        model = models[str(id_)]
+        return model
+        # return Model.from_dict({'name': models[str(id_)].name, 'id': id_})
     except KeyError:
         return Error(code=404, message="Model not found"), 404
 
 
-def get_model_image(id_):
-    """Render and return image of network model
+def get_models():
+    """Get a list of all network models
 
-    Returns an SVG image of the network based on CIM information. # noqa: E501
-
-    :param id: Model id
-    :type id: int
-
-    :rtype: file
+    :rtype: dict
     """
-    raise Exception('Unimplemented')
+    global models
+    if models == {}:
+        return Error(code=404, message="No models in to database"), 404
+    model_list = []
+    for key, v in models.items():
+        #TODO: Correct Model model
+        model_list.append({'id': int(key), "name": v.name,
+                          "profiles": ["EQ"], "version": "1234"})
+    return model_list
 
 
-def import_model(id, body):
-    """Import model from file
-
-    The input file should be an archive containing the grid data in the CIM
-    format. Optionally, profiles or stochastic parameters can be given as
-    additional files, where file and column name should correspond to the CIM
-    component uuid and attribute name. # noqa: E501
-
-    :param id: Model id
-    :type id: int
-    :param body: Files defining the model
-    :type body: str
-
-    :rtype: Model
-    """
-    raise Exception('Unimplemented')
-
-
-def update_element(id, elem_id, model_element_update):
+def update_element(id, elem_id, model_element_update):  # noqa: E501
     """Update element of model
 
 
@@ -218,14 +213,13 @@ def update_element(id, elem_id, model_element_update):
     raise Exception('Unimplemented')
 
 
-def update_model(id, model_update):
+def update_model(id):  # noqa: E501
     """Update a network model
 
 
     :param id: Model id
     :type id: int
-    :param model_update: Network model to be updated
-    :type model_update: dict | bytes
+
 
     :rtype: Model
     """

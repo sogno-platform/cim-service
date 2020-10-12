@@ -29,6 +29,14 @@ def _deserialize(data, klass):
         if typing_utils.is_dict(klass):
             return _deserialize_dict(data, klass.__args__[1])
     else:
+        # Handle special types:
+        if isinstance(klass, list):
+            if klass[0] is str:
+                if type(data) is str:
+                    return data.split(",")
+                if type(data) is list and type(data[0]) is str:
+                    return data
+
         return deserialize_model(data, klass)
 
 

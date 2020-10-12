@@ -7,7 +7,8 @@ from flask import json
 from six import BytesIO
 
 # from models.error import Error  # noqa: E501
-from models.model import Model  # noqa: E501
+from models import Model  # noqa: E501
+from models import ModelReply  # noqa: E501
 # from models.model_element import ModelElement  # noqa: E501
 # from models.model_element_attributes import ModelElementAttributes  # noqa: E501
 # from models.model_element_update import ModelElementUpdate  # noqa: E501
@@ -67,11 +68,16 @@ class TestNetworkModelsController(BaseTestCase):
             '/models',
             method='POST',
             headers=headers,
-            data={'name': modelname, 'files': cim_xml},
+            data={
+                'name': modelname,
+                'profiles': "DI",
+                'version': "cgmes_v2_4_15",
+                'files': cim_xml
+            },
             content_type='multipart/form-data')
         self.assert200(response,
                        'Response is: ' + response.data.decode('utf-8'))
-        returned_model = Model.from_dict(json.loads(response.get_data()))
+        returned_model = ModelReply.from_dict(json.loads(response.get_data()))
         assert returned_model.name == modelname
         assert isinstance(returned_model.id, int)
 
