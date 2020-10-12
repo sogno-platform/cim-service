@@ -231,43 +231,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /models/{id}/image:
-    # TODO: Part of DPsim
-    get:
-      tags:
-        - Network Models
-      summary: Render and return image of network model
-      description: >-
-        Returns an SVG image of the network based on CIM information.
-      operationId: cimadapter.get_model_image
-      parameters:
-        - name: id
-          description: Model id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: OK
-          content:
-            application/octet-stream:
-              schema:
-                description: image file as SVG
-                type: string
-                format: binary
-            # TODO: figure out how this can be done in connexion
-            # text/uri-list:
-            #   schema:
-            #     description: link to image file as SVG
-            #     type: string
-        default:
-            description: unexpected error
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/Error"
-
   /models/{id}/elements:
     get:
       tags:
