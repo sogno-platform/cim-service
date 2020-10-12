@@ -14,7 +14,7 @@ def add_analysis():  # noqa: E501
 
     :rtype: AnalysisResponse
     """
-    return 'do some magic!'
+    raise Exception('Unimplemented')
 
 
 def delete_analysis(id):  # noqa: E501
@@ -27,7 +27,7 @@ def delete_analysis(id):  # noqa: E501
 
     :rtype: AnalysisResponse
     """
-    return 'do some magic!'
+    raise Exception('Unimplemented')
 
 
 def get_all_analysis():  # noqa: E501
@@ -38,7 +38,7 @@ def get_all_analysis():  # noqa: E501
 
     :rtype: List[AnalysisResponse]
     """
-    return 'do some magic!'
+    raise Exception('Unimplemented')
 
 
 def get_analysis(id):  # noqa: E501
@@ -51,4 +51,4 @@ def get_analysis(id):  # noqa: E501
 
     :rtype: AnalysisResponse
     """
-    return 'do some magic!'
+    raise Exception('Unimplemented')
