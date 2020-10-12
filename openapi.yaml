@@ -42,21 +42,50 @@ paths:
         content:
           multipart/form-data:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/Model'
-                - type: object
-                  required:
-                    - files
-                    - name
-                    - profiles
-                    - version
-                  properties:
-                    files:
-                      type: array
-                      description: List of cim-xml files
-                      items:
-                        type: string
-                        format: binary
+              # This would be the nice version, but connexion has a bug with this: https://github.com/zalando/connexion/issues/1275
+              # Therefore, we use the longer not-ref version:
+              # allOf:
+              #   - $ref: '#/components/schemas/Model'
+              #   required:
+              #     - files
+              #     - name
+              #     - profiles
+              #     - version
+              #   properties:
+              #     files:
+              #       type: array
+              #       description: List of cim-xml files
+              #       items:
+              #         type: string
+              #         format: binary
+              type: object
+              description: Properties of a simulation model
+              required:
+                - files
+                - name
+                - profiles
+                - version
+              properties:
+                name:
+                  type: string
+                  description: Name of simulation model
+                profiles:
+                  description: List of cgmes profiles in the model
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CGMES_Profile'
+                version:
+                  # TODO: Discuss this
+                  description: cgmes version string. Example "cgmes_v2_4_15"
+                  type: string
+                  pattern: '^cgmes_v\d+_\d+(_\d+){0,1}$'
+                files:
+                  type: array
+                  description: List of cim-xml files
+                  items:
+                    type: string
+                    format: binary
+
       responses:
         '200':
           description: OK
@@ -535,9 +564,9 @@ components:
             $ref: '#/components/schemas/CGMES_Profile'
         version:
           # TODO: Discuss this
-          description: Version string. Defaults to xyz
+          description: cgmes version string. Example "cgmes_v2_4_15"
           type: string
-          format: binary
+          pattern: '^cgmes_v\d+_\d+(_\d+){0,1}$'
 
     ModelReply:
       allOf:
