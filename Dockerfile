@@ -44,11 +44,6 @@ RUN cd /tmp && \
 ADD requirements-dpsim.txt .
 RUN pip3 install -r requirements-dpsim.txt
 
-# Activate Jupyter extensions
-RUN dnf -y --refresh install npm
-RUN jupyter nbextension enable --py widgetsnbextension
-RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
-
 # Build DPsim from source
 RUN mkdir /dpsim
 RUN cd /dpsim && \
