@@ -347,21 +347,6 @@ class TestNetworkModelsController(BaseTestCase):
         self.assert200(response,
                        'Response is: ' + response.data.decode('utf-8'))
 
-    def test_get_model_image(self):
-        """Test case for get_model_image
-
-        Render and return image of network model
-        """
-        headers = {
-            'Accept': 'application/json',
-        }
-        response = self.client.open(
-            '/models/{id}/image'.format(id=56),
-            method='GET',
-            headers=headers)
-        self.assert200(response,
-                       'Response is: ' + response.data.decode('utf-8'))
-
     def test_get_models(self):
         """Test case for get_models
 
