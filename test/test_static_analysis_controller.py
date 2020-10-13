@@ -3,11 +3,7 @@
 from __future__ import absolute_import
 import unittest
 
-from flask import json
-from six import BytesIO
-
-from models.analysis_response import AnalysisResponse  # noqa: E501
-from models.error import Error  # noqa: E501
+# from models.analysis_response import AnalysisResponse  # noqa: E501
 from test.basetestcase import BaseTestCase
 
 

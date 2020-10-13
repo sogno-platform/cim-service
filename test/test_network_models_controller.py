@@ -137,7 +137,8 @@ class TestNetworkModelsController(BaseTestCase):
                 'files': cim_xml
             },
             content_type='multipart/form-data')
-        assert response.status_code == 422, 'Response is: ' + response.data.decode('utf-8')
+        assert response.status_code == 422, 'Response is: ' + \
+            response.data.decode('utf-8')
 
         cim_xml = [
             open("test/sampledata/testfile1.txt", "rb"),
