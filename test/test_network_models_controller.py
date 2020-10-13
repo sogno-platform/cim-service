@@ -100,11 +100,16 @@ class TestNetworkModelsController(BaseTestCase):
         response = self.client.open(
             '/models',
             method='POST',
-            data={'name': modelname, 'files': cim_xml},
+            data={
+                'name': modelname,
+                'profiles': "DI,EQ,SV,TP",
+                'version': "cgmes_v2_4_15",
+                'files': cim_xml
+            },
             content_type='multipart/form-data')
         self.assert200(response,
                        'Response is: ' + response.data.decode('utf-8'))
-        returned_model = Model.from_dict(json.loads(response.get_data()))
+        returned_model = ModelReply.from_dict(json.loads(response.get_data()))
         assert returned_model.name == modelname
         assert isinstance(returned_model.id, int)
 
@@ -125,10 +130,14 @@ class TestNetworkModelsController(BaseTestCase):
         response = self.client.open(
             '/models',
             method='POST',
-            data={'name': "broken_xml", 'file': cim_xml},
+            data={
+                'name': "broken_xml",
+                'profiles': "DI",
+                'version': "cgmes_v2_4_15",
+                'files': cim_xml
+            },
             content_type='multipart/form-data')
-        print(self.assert400(response,
-                             'Response is: ' + response.data.decode('utf-8')))
+        assert response.status_code == 422, 'Response is: ' + response.data.decode('utf-8')
 
         cim_xml = [
             open("test/sampledata/testfile1.txt", "rb"),
@@ -154,11 +163,16 @@ class TestNetworkModelsController(BaseTestCase):
         post_response = self.client.open(
             '/models',
             method='POST',
-            data={'name': modelname, 'files': cim_xml},
+            data={
+                'name': modelname,
+                'profiles': "DI",
+                'version': "cgmes_v2_4_15",
+                'files': cim_xml
+            },
             content_type='multipart/form-data')
         self.assert200(post_response,
                        'Response is : ' + post_response.data.decode('utf-8'))
-        post_response_json = Model.from_dict(
+        post_response_json = ModelReply.from_dict(
             json.loads(post_response.get_data()))
 
         # Check if model is avail
@@ -172,7 +186,7 @@ class TestNetworkModelsController(BaseTestCase):
             headers=headers)
         self.assert200(get_response,
                        'Response is : ' + get_response.data.decode('utf-8'))
-        get_response_json = Model.from_dict(
+        get_response_json = ModelReply.from_dict(
             json.loads(get_response.get_data()))
         assert get_response_json == post_response_json
 
@@ -217,7 +231,7 @@ class TestNetworkModelsController(BaseTestCase):
         self.assert200(response,
                        'Response is: ' + response.data.decode('utf-8'))
 
-        returned_model = Model.from_dict(
+        returned_model = ModelReply.from_dict(
             json.loads(response.get_data()))
         assert returned_model.id == testid
         assert returned_model.name == testname
@@ -251,7 +265,7 @@ class TestNetworkModelsController(BaseTestCase):
         self.assert200(response,
                        'Response is: ' + response.data.decode('utf-8'))
 
-        returned_model = Model.from_dict(
+        returned_model = ModelReply.from_dict(
             json.loads(response.get_data()))
         assert response_model == returned_model
 
@@ -325,7 +339,7 @@ class TestNetworkModelsController(BaseTestCase):
                        + faulty_response.data.decode('utf-8'))
 
         cimadapter.models["123456789"] = cimadapter.record(
-            name="testrecord", cimobj={})
+            Model("test_getmodel", "DI", "cgmes_v2_4_15"), cimobj={})
         response = self.client.open(
             '/models/{id}'.format(id=123456789),
             method='GET',
@@ -364,7 +378,12 @@ class TestNetworkModelsController(BaseTestCase):
         response = self.client.open(
             '/models',
             method='POST',
-            data={'name': modelname1, 'files': cim_xml},
+            data={
+                'name': modelname1,
+                'profiles': "DI",
+                'version': "cgmes_v2_4_15",
+                'files': cim_xml
+            },
             content_type='multipart/form-data')
         self.assert200(response,
                        'Response is: ' + response.data.decode('utf-8'))
@@ -376,13 +395,18 @@ class TestNetworkModelsController(BaseTestCase):
         response = self.client.open(
             '/models',
             method='POST',
-            data={'name': modelname2, 'files': cim_xml},
+            data={
+                'name': modelname2,
+                'profiles': "DI",
+                'version': "cgmes_v2_4_15",
+                'files': cim_xml
+            },
             content_type='multipart/form-data')
         self.assert200(response,
                        'Response is: ' + response.data.decode('utf-8'))
         id2 = json.loads(response.data)["id"]
 
-        # Now check the model list
+        # Now compare the response to the the model list
         response = self.client.open(
             '/models',
             method='GET',
@@ -393,8 +417,8 @@ class TestNetworkModelsController(BaseTestCase):
         for m in models:
             model_dict[m["id"]] = m["name"]
 
-        assert model_dict[id1] == modelname1
-        assert model_dict[id2] == modelname2
+        assert model_dict[str(id1)] == modelname1
+        assert model_dict[str(id2)] == modelname2
 
     def test_import_model(self):
         """Test case for import_model

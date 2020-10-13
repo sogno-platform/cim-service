@@ -171,9 +171,7 @@ def get_model(id_):
     """
     global models
     try:
-        model = models[str(id_)]
-        return model
-        # return Model.from_dict({'name': models[str(id_)].name, 'id': id_})
+        return ModelReply.from_model(models[str(id_)].model, id_)
     except KeyError:
         return Error(code=404, message="Model not found"), 404
 
@@ -187,10 +185,8 @@ def get_models():
     if models == {}:
         return Error(code=404, message="No models in to database"), 404
     model_list = []
-    for key, v in models.items():
-        #TODO: Correct Model model
-        model_list.append({'id': int(key), "name": v.name,
-                          "profiles": ["EQ"], "version": "1234"})
+    for key, rec in models.items():
+        model_list.append(ModelReply.from_model(rec.model, key))
     return model_list
 
 
