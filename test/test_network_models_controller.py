@@ -411,8 +411,8 @@ class TestNetworkModelsController(BaseTestCase):
         for m in models:
             model_dict[m["id"]] = m["name"]
 
-        assert model_dict[str(id1)] == modelname1
-        assert model_dict[str(id2)] == modelname2
+        assert model_dict[id1] == modelname1
+        assert model_dict[id2] == modelname2
 
     def test_update_element(self):
         """Test case for update_element

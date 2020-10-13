@@ -186,7 +186,7 @@ def get_models():
         return Error(code=404, message="No models in to database"), 404
     model_list = []
     for key, rec in models.items():
-        model_list.append(ModelReply.from_model(rec.model, key))
+        model_list.append(ModelReply.from_model(rec.model, int(key)))
     return model_list
 
 
