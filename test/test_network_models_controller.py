@@ -413,25 +413,6 @@ class TestNetworkModelsController(BaseTestCase):
         assert model_dict[str(id1)] == modelname1
         assert model_dict[str(id2)] == modelname2
 
-    def test_import_model(self):
-        """Test case for import_model
-
-        Import model from file
-        """
-        body = (BytesIO(b'some file data'), 'file.txt')
-        headers = {
-            'Accept': 'application/json',
-            'Content-Type': 'application/octet-stream',
-        }
-        response = self.client.open(
-            '/models/{id}/import'.format(id=56),
-            method='POST',
-            headers=headers,
-            data=json.dumps(body),
-            content_type='application/octet-stream')
-        self.assert200(response,
-                       'Response is: ' + response.data.decode('utf-8'))
-
     def test_update_element(self):
         """Test case for update_element
 
