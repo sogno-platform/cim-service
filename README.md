@@ -12,7 +12,7 @@ The API is specified in the [openapi.yaml](openapi.yaml).
 
 - Python 3.5.2+
 - DPSim Version xy
-- Python packages specified by [requirements.txt](./requirements.txt). Install them with `pip3 install -r requirements.txt`
+- CIMpy python packages and dependencies specified by [requirements-cimpy.txt](./requirements-cimpy.txt). Install them with `pip3 install -r requirements-cimpy.txt`
 
 ## Usage
 

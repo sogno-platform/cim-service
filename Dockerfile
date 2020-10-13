@@ -2,6 +2,10 @@ FROM fedora:32
 
 RUN dnf -y update
 
+# ============
+#    DPSim
+# ===========
+
 # Toolchain
 RUN dnf -y install \
 	gcc gcc-c++ clang \
@@ -52,7 +56,10 @@ RUN cd /dpsim && \
 	cmake  -DBUILD_EXAMPLES=OFF -DPYBIND=ON .. && \
 	make -j$(nproc) dpsimpy
 
-# CIMpy-Server
+# ============
+#    CIMpy
+# ============
+
 # Install libxml dependencies
 RUN dnf -y install libxslt-devel libxslt && \
     pip install --no-cache-dir lxml>=3.5.0
@@ -63,8 +70,8 @@ RUN pip3 install --no-cache-dir flake8
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-COPY requirements.txt /usr/src/app/
-RUN pip3 install --no-cache-dir -r requirements.txt
+COPY requirements-cimpy.txt /usr/src/app/
+RUN pip3 install --no-cache-dir -r requirements-cimpy.txt
 
 # COPY . /usr/src/app
 
