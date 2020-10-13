@@ -222,8 +222,8 @@ class TestNetworkModelsController(BaseTestCase):
             headers=headers)
         self.assert404(faulty_response,
                        'Response is: ' + faulty_response.data.decode('utf-8'))
-
-        cimadapter.models["1111"] = cimadapter.record(name=testname, cimobj={})
+        cimadapter.models[str(testid)] = cimadapter.record(
+            Model(testname, "DI", "cgmes_v2_4_15"), cimobj={})
         response = self.client.open(
             '/models/{id}'.format(id=testid),
             method='DELETE',
@@ -231,10 +231,13 @@ class TestNetworkModelsController(BaseTestCase):
         self.assert200(response,
                        'Response is: ' + response.data.decode('utf-8'))
 
+        assert str(testid) not in cimadapter.models
+
         returned_model = ModelReply.from_dict(
             json.loads(response.get_data()))
         assert returned_model.id == testid
         assert returned_model.name == testname
+        assert returned_model.version == "cgmes_v2_4_15"
 
     def test_add_and_delete_model(self):
         """Test case for delete_model
@@ -251,11 +254,16 @@ class TestNetworkModelsController(BaseTestCase):
         post_response = self.client.open(
             '/models',
             method='POST',
-            data={'name': modelname, 'files': cim_xml},
+            data={
+                'name': modelname,
+                'profiles': "DI",
+                'version': "cgmes_v2_4_15",
+                'files': cim_xml
+            },
             content_type='multipart/form-data')
         self.assert200(post_response,
                        'Response is : ' + post_response.data.decode('utf-8'))
-        response_model = Model.from_dict(
+        response_model = ModelReply.from_dict(
             json.loads(post_response.get_data()))
 
         response = self.client.open(

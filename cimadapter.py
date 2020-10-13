@@ -94,7 +94,7 @@ def delete_element(id, elem_id):
     raise Exception('Unimplemented')
 
 
-def delete_model(id):
+def delete_model(id_):
     """Delete a network model
 
     :param id: Model id
@@ -105,14 +105,14 @@ def delete_model(id):
     global models
 
     if str(id_) in models:
-        model = Model.from_dict({'name': models[str(id_)].name, 'id': id_})
+        model_reply = ModelReply.from_model(models[str(id_)].model, id_)
         del models[str(id_)]
-        return model
+        return model_reply
     else:
         return Error(code=404, message="No models in to database"), 404
 
 
-def export_model(id):
+def export_model(id_):
     """Export model to file
 
     Returns an archive containing the grid data in CIM formatted files and
