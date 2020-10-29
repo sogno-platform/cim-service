@@ -50,11 +50,15 @@ RUN pip3 install -r requirements-dpsim.txt
 
 # Build DPsim from source
 RUN mkdir /dpsim
-RUN cd /dpsim && \
-	git clone --recursive https://github.com/dpsim-simulator/dpsim.git && \
-	mkdir -p dpsim/build && cd dpsim/build && \
-	cmake  -DBUILD_EXAMPLES=OFF -DPYBIND=ON .. && \
-	make -j$(nproc) dpsimpy
+RUN cd /dpsim && git clone --recursive https://github.com/dpsim-simulator/dpsim.git && \
+    cd /dpsim/dpsim && pip3 install -r requirements.txt && \
+                       python3 setup.py install && \
+                       mkdir -p build && cd build && \
+                       cmake -DBUILD_EXAMPLES=OFF -DPYBIND=ON .. && \
+                       cmake --build . --target dpsimpy && \
+                       make install && mkdir /usr/local/lib64/python3.8/site-packages/dpsimpy && \
+                       cp dpsimpy.cpython-38-x86_64-linux-gnu.so /usr/local/lib64/python3.8/site-packages/dpsimpy/ && \
+                       echo dpsimpy >> /usr/local/lib64/python3.8/site-packages/easy-install.pth
 
 # ============
 #    CIMpy
@@ -73,9 +77,9 @@ WORKDIR /usr/src/app
 COPY requirements-cimpy.txt /usr/src/app/
 RUN pip3 install --no-cache-dir -r requirements-cimpy.txt
 
-# COPY . /usr/src/app
+COPY . /usr/src/app
 
-# EXPOSE 8080
+EXPOSE 8080
 
 # ENTRYPOINT ["python3"]
 
