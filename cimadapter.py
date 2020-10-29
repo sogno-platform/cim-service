@@ -1,29 +1,15 @@
 import cimpy
 import connexion
-import shelve
 from models import Error
 from models import Model
 from models import ModelReply
 # from models import ModelElementUpdate
 # from models import ModelUpdate
 # from models import NewModelElement
-from dataclasses import dataclass
 #  import pdb
-import random
-from os import urandom
 from xml.etree import ElementTree
+import db
 
-random.seed(int.from_bytes(urandom(4), byteorder='big'))
-
-
-@dataclass
-class record:
-    model: Model
-    cimobj: dict
-
-
-# We do not use Writeback mode here, so beware
-models = shelve.open("cimpy.db")
 
 
 def add_element(id, new_model_element):
@@ -45,7 +31,6 @@ def add_element(id, new_model_element):
 def add_model():
     """Add a new network model
     """
-    global models
 
     # parse the json request
     new_model = Model.from_dict(connexion.request.form)
@@ -62,19 +47,13 @@ def add_model():
     except ElementTree.ParseError:
         return Error(code=422, message="Invalid XML files"), 422
 
-    # generate a new UUID which will be the model ID
-    new_id = random.getrandbits(32)
-    # Ensure ID is unique
-    while str(new_id) in models:
-        new_id = random.getrandbits(32)
-
     # create cimpy objects
     try:
         cimpy_data = cimpy.cim_import(files, new_model.version)
     except Exception:
         return Error(code=422, message="Invalid CIM files"), 422
 
-    models[str(new_id)] = record(new_model, cimpy_data)
+    new_id = db.put_model(new_model, cimpy_data, files)
 
     # Return the model as `ModelReply`
     return ModelReply.from_model(new_model, new_id)
@@ -169,9 +148,8 @@ def get_model(id_):
 
     :rtype: Model
     """
-    global models
     try:
-        return ModelReply.from_model(models[str(id_)].model, id_)
+        return ModelReply.from_model(db.get_model(id_), id_)
     except KeyError:
         return Error(code=404, message="Model not found"), 404
 
@@ -181,13 +159,7 @@ def get_models():
 
     :rtype: dict
     """
-    global models
-    if models == {}:
-        return Error(code=404, message="No models in to database"), 404
-    model_list = []
-    for key, rec in models.items():
-        model_list.append(ModelReply.from_model(rec.model, int(key)))
-    return model_list
+    return db.get_models()
 
 
 def update_element(id, elem_id, model_element_update):  # noqa: E501
