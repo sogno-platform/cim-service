@@ -429,11 +429,15 @@ paths:
         description: Analysis model to be added
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               oneOf:
                 - $ref: '#/components/schemas/PowerflowAnalysis'
                 - $ref: '#/components/schemas/OutageAnalysis'
+            example:
+              name: "theAnalysis"
+              type: "PowerflowAnalysis"
+              modelid: 1
       responses:
         '200':
           description: OK
