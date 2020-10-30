@@ -12,7 +12,7 @@ import db
 
 
 
-def add_element(id, new_model_element):
+def add_element(id_):
     """Add element to model
 
     :param id: Model id
@@ -59,7 +59,7 @@ def add_model():
     return ModelReply.from_model(new_model, new_id)
 
 
-def delete_element(id, elem_id):
+def delete_element(id_, elem_id):
     """Delete element of model
 
 
@@ -81,14 +81,7 @@ def delete_model(id_):
 
     :rtype: Model
     """
-    global models
-
-    if str(id_) in models:
-        model_reply = ModelReply.from_model(models[str(id_)].model, id_)
-        del models[str(id_)]
-        return model_reply
-    else:
-        return Error(code=404, message="No models in to database"), 404
+    return db.delete_model(id_)
 
 
 def export_model(id_):
@@ -102,19 +95,18 @@ def export_model(id_):
 
     :rtype: file
     """
-    global models
-
-    if str(id_) in models:
+    model=db.get_model(id_)
+    if isinstance(model, db.record):
         # TODO: Which Profiles? Profile in Request?
-        return cimpy.generate_xml(models[str(id_)].cimobj,
+        return cimpy.cimexport.generate_xml(model.cimobj,
                                   'cgmes_v2_4_15',
                                   cimpy.cgmes_v2_4_15.Base.Profile['EQ'],
                                   ['DI', 'EQ', 'SV', 'TP'])
     else:
-        return Error(code=404, message="No models in to database"), 404
+        return Error(code=404, message="No model with id: " + str(id_) + " found in database"), 404
 
 
-def get_element(id, elem_id):
+def get_element(id_, elem_id):
     """Get element of model
 
     :param id: Model id
@@ -127,7 +119,7 @@ def get_element(id, elem_id):
     raise Exception('Unimplemented')
 
 
-def get_elements(id):
+def get_elements(id_):
     """Get all elements of a model
 
 
@@ -162,7 +154,7 @@ def get_models():
     return db.get_models()
 
 
-def update_element(id, elem_id, model_element_update):  # noqa: E501
+def update_element(id_, elem_id, model_element_update):  # noqa: E501
     """Update element of model
 
 
@@ -181,7 +173,7 @@ def update_element(id, elem_id, model_element_update):  # noqa: E501
     raise Exception('Unimplemented')
 
 
-def update_model(id):  # noqa: E501
+def update_model(id_):  # noqa: E501
     """Update a network model
 
 

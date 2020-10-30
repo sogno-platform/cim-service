@@ -11,11 +11,11 @@ def add_analysis():  # noqa: E501
      # noqa: E501
     :rtype: AnalysisResponse
     """
-    id_ = connexion.request.json['modelid']
+    model_id = connexion.request.json['modelid']
     name = connexion.request.json['name']
     print("Adding analysis with name: ", name)
     logger = dpsimpy.Logger(name)
-    model = db.get_model(id_)
+    model = db.get_model(model_id)
     files = model.files
 
     # prepare the files for dpsim to read. we should make dpsim accept data blobs.
@@ -47,7 +47,7 @@ def add_analysis():  # noqa: E501
 
     return connexion.request.json
 
-def delete_analysis(id):  # noqa: E501
+def delete_analysis(id_):  # noqa: E501
     """Delete specific analysis including results
 
      # noqa: E501
@@ -71,7 +71,7 @@ def get_all_analysis():  # noqa: E501
     raise Exception('Unimplemented')
 
 
-def get_analysis(id):  # noqa: E501
+def get_analysis(id_):  # noqa: E501
     """Get specific analysis status and results
 
      # noqa: E501

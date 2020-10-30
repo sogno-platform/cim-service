@@ -6,6 +6,7 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from models.model import Model
+from models import Error
 import util
 
 
@@ -54,7 +55,10 @@ class ModelReply(Model):
     def from_model(cls, model, id) -> 'ModelReply':
         """Converts the Model into a ModelReply
         """
-        return ModelReply(id, model.name, model.profiles, model.version)
+        if model is not None:
+            return ModelReply(id, model.name, model.profiles, model.version)
+        else:
+            return Error(code=404, message="Model not found"), 404
 
     @classmethod
     def from_dict(cls, dikt) -> 'ModelReply':

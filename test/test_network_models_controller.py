@@ -16,7 +16,7 @@ from models import ModelReply  # noqa: E501
 # from models.new_model import NewModel  # noqa: E501
 # from models.new_model_element import NewModelElement  # noqa: E501
 from test.basetestcase import BaseTestCase
-import cimadapter
+import cimadapter, db
 
 
 class TestNetworkModelsController(BaseTestCase):
@@ -25,7 +25,7 @@ class TestNetworkModelsController(BaseTestCase):
     def setUp(arg):
         # Replace the shelve with a dict, so that we have a clean testsetup and
         # don't pollute the (production) database
-        cimadapter.models = {}
+        db.models = {}
 
     def test_add_element(self):
         """Test case for add_element
@@ -223,8 +223,8 @@ class TestNetworkModelsController(BaseTestCase):
             headers=headers)
         self.assert404(faulty_response,
                        'Response is: ' + faulty_response.data.decode('utf-8'))
-        cimadapter.models[str(testid)] = cimadapter.record(
-            Model(testname, "DI", "cgmes_v2_4_15"), cimobj={})
+        db.models[str(testid)] = db.record(
+            Model(testname, "DI", "cgmes_v2_4_15"), cimobj={}, files=None)
         response = self.client.open(
             '/models/{id}'.format(id=testid),
             method='DELETE',
@@ -232,7 +232,7 @@ class TestNetworkModelsController(BaseTestCase):
         self.assert200(response,
                        'Response is: ' + response.data.decode('utf-8'))
 
-        assert str(testid) not in cimadapter.models
+        assert str(testid) not in db.models
 
         returned_model = ModelReply.from_dict(
             json.loads(response.get_data()))
@@ -347,8 +347,8 @@ class TestNetworkModelsController(BaseTestCase):
                        'Response is: '
                        + faulty_response.data.decode('utf-8'))
 
-        cimadapter.models["123456789"] = cimadapter.record(
-            Model("test_getmodel", "DI", "cgmes_v2_4_15"), cimobj={})
+        db.models["123456789"] = db.record(
+            Model("test_getmodel", "DI", "cgmes_v2_4_15"), cimobj={}, files=None)
         response = self.client.open(
             '/models/{id}'.format(id=123456789),
             method='GET',
@@ -434,7 +434,7 @@ class TestNetworkModelsController(BaseTestCase):
             '/models/{id}/elements/{elem_id}'.format(id=56, elem_id=56),
             method='PUT',
             headers=headers,
-            data=json.dumps(model_element_update),
+            data=model_element_update,
             content_type='application/json')
         self.assert200(response,
                        'Response is: ' + response.data.decode('utf-8'))
