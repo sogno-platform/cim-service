@@ -452,12 +452,70 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /analysis/{id}/results:
+    get:
+      tags:
+        - Static Analysis
+      summary: Get specific analysis results
+      operationId: dpsimadapter.get_analysis_results
+      parameters:
+        - name: id
+          description: Analysis id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                description: Archive containing result and log files, e.g. CSV
+                type: string
+                format: binary
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /analysis/{id}/logs:
+    get:
+      tags:
+        - Static Analysis
+      summary: Get specific analysis logs
+      operationId: dpsimadapter.get_analysis_logs
+      parameters:
+        - name: id
+          description: Analysis id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                description: Archive containing result and log files, e.g. CSV
+                type: string
+                format: binary
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
 
   /analysis/{id}:
     get:
       tags:
         - Static Analysis
-      summary: Get specific analysis status and results
+      summary: Get specific analysis status
       operationId: dpsimadapter.get_analysis
       parameters:
         - name: id
@@ -473,16 +531,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AnalysisResponse'
-            # TODO: Maybe encode this in the response type. I'm not very confident with different content-type responses
-            application/octet-stream:
-              schema:
-                description: Archive containing result and log files, e.g. CSV
-                type: string
-                format: binary
-            text/uri-list:
-              schema:
-                description: Link to archive containing result and log files
-                type: string
         default:
           description: unexpected error
           content:
@@ -644,7 +692,6 @@ components:
 
     PowerflowAnalysis:
       allOf:
-        - $ref: '#/components/schemas/Analysis'
         - type: object
           properties:
             param:
@@ -656,7 +703,6 @@ components:
 
     OutageAnalysis:
       allOf:
-      - $ref: '#/components/schemas/Analysis'
       - type: object
         required:
           - nm1List
