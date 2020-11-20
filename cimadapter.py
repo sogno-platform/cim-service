@@ -8,7 +8,7 @@ from models import ModelReply
 # from models import NewModelElement
 #  import pdb
 from xml.etree import ElementTree
-import db
+import model_db
 
 
 
@@ -53,7 +53,7 @@ def add_model():
     except Exception:
         return Error(code=422, message="Invalid CIM files"), 422
 
-    new_id = db.put_model(new_model, cimpy_data, files)
+    new_id = model_db.put_model(new_model, cimpy_data, files)
 
     # Return the model as `ModelReply`
     return ModelReply.from_model(new_model, new_id)
@@ -81,7 +81,7 @@ def delete_model(id_):
 
     :rtype: Model
     """
-    return db.delete_model(id_)
+    return model_db.delete_model(id_)
 
 
 def export_model(id_):
@@ -95,8 +95,8 @@ def export_model(id_):
 
     :rtype: file
     """
-    model=db.get_model(id_)
-    if isinstance(model, db.record):
+    model = model_db.get_model(id_)
+    if isinstance(model, model_db.record):
         # TODO: Which Profiles? Profile in Request?
         return cimpy.cimexport.generate_xml(model.cimobj,
                                   'cgmes_v2_4_15',
@@ -141,7 +141,7 @@ def get_model(id_):
     :rtype: Model
     """
     try:
-        return ModelReply.from_model(db.get_model(id_), id_)
+        return ModelReply.from_model(model_db.get_model(id_), id_)
     except KeyError:
         return Error(code=404, message="Model not found"), 404
 
@@ -151,7 +151,7 @@ def get_models():
 
     :rtype: dict
     """
-    return db.get_models()
+    return model_db.get_models()
 
 
 def update_element(id_, elem_id, model_element_update):  # noqa: E501

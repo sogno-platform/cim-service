@@ -16,7 +16,7 @@ from models import ModelReply  # noqa: E501
 # from models.new_model import NewModel  # noqa: E501
 # from models.new_model_element import NewModelElement  # noqa: E501
 from test.basetestcase import BaseTestCase
-import cimadapter, db
+import cimadapter, model_db
 
 class Redis():
     def __init__(self):
@@ -75,7 +75,7 @@ class TestNetworkModelsController(BaseTestCase):
     """NetworkModelsController integration test stubs"""
 
     def setUp(self):
-        db.overwrite_connection(redis)
+        model_db.overwrite_connection(redis)
 
     def test_add_element(self):
         """Test case for add_element

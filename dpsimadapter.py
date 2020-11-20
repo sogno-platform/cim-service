@@ -8,7 +8,7 @@ from enum import Enum
 from glob import glob
 
 import dpsimpy
-import db
+import model_db
 
 class TaskExecutor:
     """
@@ -128,7 +128,7 @@ class TaskExecutor:
                 out.write("run analysis: " + str(analysis_id))
                 TaskExecutor.status_list[analysis_id] = TaskExecutor.Status.running.value
                 logger = dpsimpy.Logger(analysis_name)
-                model = db.get_model(model_id)
+                model = model_db.get_model(model_id)
                 files = model.files
 
                 # prepare the files for dpsim to read. we should make dpsim accept data blobs.
