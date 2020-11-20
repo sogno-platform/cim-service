@@ -83,4 +83,4 @@ COPY . /usr/src/app
 
 EXPOSE 8080
 
-ENTRYPOINT [ "/usr/bin/python3", "server.py"]
+CMD [ "/usr/bin/python3", "server.py"]

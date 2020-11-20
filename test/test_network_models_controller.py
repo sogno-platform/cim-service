@@ -18,14 +18,64 @@ from models import ModelReply  # noqa: E501
 from test.basetestcase import BaseTestCase
 import cimadapter, db
 
+class Redis():
+    def __init__(self):
+        self.db = {}
+        self.members = []
+        self.count = 0
+    def incr(self, a):
+        self.count = self.count + 1
+        return self.count
+    def delete(self, a):
+        str_a = str(a)
+        print("DELETE: ", str_a)
+        if str_a in self.db:
+            #print("returns: ", self.db[str_a])
+            obj = self.db[str_a]
+            del self.db[str_a]
+            return obj
+        else:
+            return None
+    def get(self, a):
+        str_a = str(a)
+        print("GET: ", str_a)
+        if str_a in self.db:
+            #print("returns: ", self.db[str_a])
+            return self.db[str_a]
+        else:
+            return None
+    def sadd(self, a, b):
+        self.members.append(b.encode('utf-8'))
+        return True
+    def set(self, a, b):
+        if type(b) is int:
+            b_str = str(b)
+            b_bytes = b_str.encode('utf-8')
+        elif type(b) is bytes:
+            b_bytes = b
+        elif type(b) is str:
+            b_bytes = b.encode('utf-8')
+        else:
+            raise Exception("CANNOT UNDERSTAND TYPE OF " + str(b))
+        print("SET: ", a)
+        self.db[a] = b_bytes
+        return True
+    def smembers(self, a):
+        return self.members
+    def srem(self, a, b):
+        if b in self.members:
+            self.members.remove(b)
+        else:
+            print("NOT IN MEMBERS: ", b)
+        return True
+
+redis = Redis()
 
 class TestNetworkModelsController(BaseTestCase):
     """NetworkModelsController integration test stubs"""
 
-    def setUp(arg):
-        # Replace the shelve with a dict, so that we have a clean testsetup and
-        # don't pollute the (production) database
-        db.models = {}
+    def setUp(self):
+        db.overwrite_connection(redis)
 
     def test_add_element(self):
         """Test case for add_element
