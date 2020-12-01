@@ -1,4 +1,14 @@
 
+# This script hits three endpoints:
+#
+#  - /models      (PUT): to add one model
+#  - /analysis    (PUT): to start analysing the model
+#  - /analysis/id (GET): to get the status of the analysis
+#
+# This script expects the user to have checked out:
+# git@git.rwth-aachen.de:acs/public/grid-data/cim-grid-data.git
+# into their home directory.
+
 set -o nounset
 set -o errexit
 
