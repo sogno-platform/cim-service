@@ -68,6 +68,19 @@ def get_models():
     else:
         return []
 
+def get_record(model_id):
+    """Get the full record of a stored model. This includes the cimobj and the xml files.
+
+    :param model_id: Model id fs
+    :type model_id: int
+
+    :rtype: record
+    """
+    global models
+    try:
+        return models[str(model_id)]
+    except KeyError:
+        return Non
 
 def put_model(new_model, cimpy_data, files):
     """Store a model in the db
