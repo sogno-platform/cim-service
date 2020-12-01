@@ -511,10 +511,10 @@ components:
         - SV
         - DY
         - GL
-        - DI
+        - DL
       description: >
         Profile names:
-          * `DI` - DiagramLayout
+          * `DL` - DiagramLayout
           * `DY` - Dynamics
           * `EQ` - Equipment
           * `GL` - GeographicalLocation

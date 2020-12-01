@@ -70,7 +70,7 @@ class TestNetworkModelsController(BaseTestCase):
             headers=headers,
             data={
                 'name': modelname,
-                'profiles': "DI",
+                'profiles': "DL",
                 'version': "cgmes_v2_4_15",
                 'files': cim_xml
             },
@@ -102,7 +102,7 @@ class TestNetworkModelsController(BaseTestCase):
             method='POST',
             data={
                 'name': modelname,
-                'profiles': "DI,EQ,SV,TP",
+                'profiles': "DL,EQ,SV,TP",
                 'version': "cgmes_v2_4_15",
                 'files': cim_xml
             },
@@ -132,7 +132,7 @@ class TestNetworkModelsController(BaseTestCase):
             method='POST',
             data={
                 'name': "broken_xml",
-                'profiles': "DI",
+                'profiles': "DL",
                 'version': "cgmes_v2_4_15",
                 'files': cim_xml
             },
@@ -166,7 +166,7 @@ class TestNetworkModelsController(BaseTestCase):
             method='POST',
             data={
                 'name': modelname,
-                'profiles': "DI",
+                'profiles': "DL",
                 'version': "cgmes_v2_4_15",
                 'files': cim_xml
             },
@@ -224,7 +224,7 @@ class TestNetworkModelsController(BaseTestCase):
         self.assert404(faulty_response,
                        'Response is: ' + faulty_response.data.decode('utf-8'))
         db.models[str(testid)] = db.record(
-            Model(testname, "DI", "cgmes_v2_4_15"), cimobj={}, files=None)
+            Model(testname, "DL", "cgmes_v2_4_15"), cimobj={}, files=None)
         response = self.client.open(
             '/models/{id}'.format(id=testid),
             method='DELETE',
@@ -257,7 +257,7 @@ class TestNetworkModelsController(BaseTestCase):
             method='POST',
             data={
                 'name': modelname,
-                'profiles': "DI",
+                'profiles': "DL",
                 'version': "cgmes_v2_4_15",
                 'files': cim_xml
             },
@@ -348,7 +348,7 @@ class TestNetworkModelsController(BaseTestCase):
                        + faulty_response.data.decode('utf-8'))
 
         db.models["123456789"] = db.record(
-            Model("test_getmodel", "DI", "cgmes_v2_4_15"), cimobj={}, files=None)
+            Model("test_getmodel", "DL", "cgmes_v2_4_15"), cimobj={}, files=None)
         response = self.client.open(
             '/models/{id}'.format(id=123456789),
             method='GET',
@@ -374,7 +374,7 @@ class TestNetworkModelsController(BaseTestCase):
             method='POST',
             data={
                 'name': modelname1,
-                'profiles': "DI",
+                'profiles': "DL",
                 'version': "cgmes_v2_4_15",
                 'files': cim_xml
             },
@@ -391,7 +391,7 @@ class TestNetworkModelsController(BaseTestCase):
             method='POST',
             data={
                 'name': modelname2,
-                'profiles': "DI",
+                'profiles': "DL",
                 'version': "cgmes_v2_4_15",
                 'files': cim_xml
             },
