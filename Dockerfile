@@ -44,22 +44,6 @@ RUN cd /tmp && \
 	cmake -DCMAKE_INSTALL_LIBDIR=/usr/local/lib64 -DUSE_CIM_VERSION=IEC61970_16v29a -DBUILD_SHARED_LIBS=ON -DBUILD_ARABICA_EXAMPLES=OFF .. && make -j$(nproc) install && \
 	rm -rf /tmp/libcimpp
 
-# Python dependencies
-ADD requirements-dpsim.txt .
-RUN pip3 install -r requirements-dpsim.txt
-
-# Build DPsim from source
-RUN mkdir /dpsim
-RUN cd /dpsim && git clone --recursive https://github.com/dpsim-simulator/dpsim.git && \
-    cd /dpsim/dpsim && pip3 install -r requirements.txt && \
-                       python3 setup.py install && \
-                       mkdir -p build && cd build && \
-                       cmake -DBUILD_EXAMPLES=OFF -DPYBIND=ON .. && \
-                       cmake --build . --target dpsimpy && \
-                       make install && mkdir /usr/local/lib64/python3.8/site-packages/dpsimpy && \
-                       cp dpsimpy.cpython-38-x86_64-linux-gnu.so /usr/local/lib64/python3.8/site-packages/dpsimpy/ && \
-                       echo dpsimpy >> /usr/local/lib64/python3.8/site-packages/easy-install.pth
-
 # ============
 #    CIMpy
 # ============
@@ -76,8 +60,6 @@ WORKDIR /usr/src/app
 
 COPY requirements-cimpy.txt /usr/src/app/
 RUN pip3 install --no-cache-dir -r requirements-cimpy.txt
-
-RUN pip3 install redis
 
 COPY . /usr/src/app
 

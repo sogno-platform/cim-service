@@ -95,13 +95,12 @@ def export_model(id_):
 
     :rtype: file
     """
-    model = model_db.get_model(id_)
-    if isinstance(model, model_db.record):
+    model_record = model_db.get_model(id_)
+
+    if isinstance(model_record, model_db.record):
+        model_files    = model_record.files
         # TODO: Which Profiles? Profile in Request?
-        return cimpy.cimexport.generate_xml(model.cimobj,
-                                  'cgmes_v2_4_15',
-                                  cimpy.cgmes_v2_4_15.Base.Profile['EQ'],
-                                  ['DI', 'EQ', 'SV', 'TP'])
+        return model_files
     else:
         return Error(code=404, message="No model with id: " + str(id_) + " found in database"), 404
 
@@ -141,7 +140,11 @@ def get_model(id_):
     :rtype: Model
     """
     try:
-        return ModelReply.from_model(model_db.get_model(id_), id_)
+        model_record = model_db.get_model(id_)
+        model_str    = model_record.model
+        model        = eval(model_str)
+        model['id']  = id_
+        return ModelReply.from_dict(model)
     except KeyError:
         return Error(code=404, message="Model not found"), 404
 
