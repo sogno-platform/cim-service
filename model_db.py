@@ -2,12 +2,8 @@
 from models import Model
 from models import ModelReply
 from models import Error
-import shelve
 from dataclasses import dataclass
-import random
-from os import urandom
 import redis
-random.seed(int.from_bytes(urandom(4), byteorder='big'))
 from tempfile import SpooledTemporaryFile
 
 @dataclass
@@ -46,9 +42,7 @@ def get_model(model_id):
     for index in range(files_len):
         data_addr = str(model_id) + "_file_" + str(index)
         data = redis_connection.get(data_addr)
-        newfile = SpooledTemporaryFile()
-        newfile.write(data)
-        files.append(newfile)
+        files.append(data.decode("utf-8"))
     return record( model, cimpy_data, files )
 
 def get_models():
