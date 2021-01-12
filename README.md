@@ -1,9 +1,9 @@
-# ACS - ANM4L Server
+# CIM Service
 
 This is a server which provides an [OpenAPI](http://spec.openapis.org/oas/v3.0.3) REST API for the following services:
 
 - [CIMpy](https://git.rwth-aachen.de/acs/public/cim/cimpy): To upload and process grid data specified by the IEC61970 standard
-- [DPSim](https://git.rwth-aachen.de/acs/public/simulation/dpsim/dpsim): A a solver library for dynamic power system simulation.
+- [DPSim](https://git.rwth-aachen.de/acs/public/simulation/dpsim/dpsim): A a solver library for dynamic power system simulation. DPsim is gradually moved to a [separate service](https://github.com/dpsim-simulator/dpsim-service).
 
 The server is based on [connexion](https://github.com/zalando/connexion) which itself builds upon [flask](https://flask.palletsprojects.com/en/1.1.x/).
 The API is specified in the [openapi.yaml](openapi.yaml).
