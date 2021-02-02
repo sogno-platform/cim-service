@@ -56,3 +56,12 @@ b8970ad2179969857ffd38767d3fb1567e522344 re-added apikey auth
 5d7c361fac3210a77fa1557bd25690d2133c1427 adapted operationID and removed not-relevant parts from the api
 23ec8610c19409ba184cc6de7b4378d51d01b224 Added podman command to run openapi generate
 abbfc49b65c8898b713583fe54fee6e2f1201f80 First draft api specification
+
+I, Markus Mirz hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: 16180422+m-mirz@users.noreply.github.com
+
+6c9e4d6ef11deb8140d54bcaba5254fdcb9c6e89 Update LICENSE
+547492e108ad29c958198b2b4fc885216c68b7ed Add LICENSE
+998829404d28404b5a9f91cf6b8aee7e3c92c3e3 merge dockerfiles
+09be73510c2973cc99a36c2777926d398f8a2284 fix dpsim dockerfile
+bde06172a9094ea1aa0a81598af69e627ed87437 dpsim docker: add build steps
+78eed2f34c2395c46e273cf3d3ccfe38ce2d76ef add dpsim dockerfile draft
