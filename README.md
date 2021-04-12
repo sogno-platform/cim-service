@@ -1,9 +1,7 @@
 # CIM Service
 
-This is a server which provides an [OpenAPI](http://spec.openapis.org/oas/v3.0.3) REST API for the following services:
-
-- [CIMpy](https://git.rwth-aachen.de/acs/public/cim/cimpy): To upload and process grid data specified by the IEC61970 standard
-- [DPSim](https://git.rwth-aachen.de/acs/public/simulation/dpsim/dpsim): A a solver library for dynamic power system simulation. DPsim is gradually moved to a [separate service](https://github.com/dpsim-simulator/dpsim-service).
+This is a server which provides an [OpenAPI](http://spec.openapis.org/oas/v3.0.3) REST API for [CIMpy](https://git.rwth-aachen.de/acs/public/cim/cimpy).
+This can be used to upload and process grid data specified by the IEC61970 standard.
 
 The server is based on [connexion](https://github.com/zalando/connexion) which itself builds upon [flask](https://flask.palletsprojects.com/en/1.1.x/).
 The API is specified in the [openapi.yaml](openapi.yaml).
@@ -11,8 +9,7 @@ The API is specified in the [openapi.yaml](openapi.yaml).
 ## Requirements
 
 - Python 3.5.2+
-- DPSim Version xy
-- CIMpy python packages and dependencies specified by [requirements-cimpy.txt](./requirements-cimpy.txt). Install them with `pip3 install -r requirements-cimpy.txt`
+- CIMpy python packages and dependencies specified by [requirements.txt](./requirements.txt). Install them with `pip3 install -r requirements.txt`
 
 ## Usage
 

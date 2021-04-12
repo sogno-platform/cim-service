@@ -19,7 +19,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest webtest
-        pip install -r requirements-cimpy.txt
+        pip install -r requirements.txt
         pip install dataclasses redis
     - name: Lint with flake8
       continue-on-error: true
@@ -28,13 +28,10 @@ jobs:
         flake8 . --count --select=E8,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    # - name: Test Static Analysis Controller
-    #   run: |
-    #     pytest -v -cov --junitxml=report.xml test/test_network_models_controller.py
-    - name: Test Network Models Controller
+
+    - name: Test
       run: |
-        pytest -v -cov --junitxml=report.xml test/test_network_models_controller.py
-        ls
+        pytest -v -cov --junitxml=report.xml test
 
     - name: Publish Unit Test Results
       uses: EnricoMi/publish-unit-test-result-action@v1
