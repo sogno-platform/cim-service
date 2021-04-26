@@ -335,11 +335,12 @@ class TestNetworkModelsController(BaseTestCase):
 
         Get a network model
         """
+        id=123456789
         headers = {
             'Accept': 'application/json',
         }
         faulty_response = self.client.open(
-            '/models/{id}'.format(id=123456789),
+            '/models/{id}'.format(id=id),
             method='GET',
             headers=headers)
         # there shouldn't be any model in the data yet
@@ -350,7 +351,7 @@ class TestNetworkModelsController(BaseTestCase):
         db.models["123456789"] = db.record(
             Model("test_getmodel", "DL", "cgmes_v2_4_15"), cimobj={}, files=None)
         response = self.client.open(
-            '/models/{id}'.format(id=123456789),
+            '/models/{id}'.format(id=id),
             method='GET',
             headers=headers)
         self.assert200(response,
