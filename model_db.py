@@ -1,4 +1,3 @@
-
 from models import Model
 from models import ModelReply
 from models import Error
@@ -6,11 +5,13 @@ from dataclasses import dataclass
 import redis
 from tempfile import SpooledTemporaryFile
 
+
 @dataclass
 class record:
     model: Model
     cimobj: dict
     files: []
+
 
 # The hostname "redis" is set for development as an alias
 # in the docker-compose.yaml file. For production this will
@@ -50,30 +51,31 @@ def get_record(model_id):
         data_addr = str(model_id) + "_file_" + str(index)
         data = redis_connection.get(data_addr)
         files.append(data.decode("utf-8"))
-    return record( model, cimpy_data, files )
+    return record(model, cimpy_data, files)
+
 
 def get_models():
     """Get a list of all network models
 
     :rtype: dict
     """
+
     def decode(a):
         print(a)
-        model_id_char   = a.decode('utf-8')
-        model_bytes     = redis_connection.get(model_id_char)
+        model_id_char = a.decode("utf-8")
+        model_bytes = redis_connection.get(model_id_char)
         if model_bytes != None:
-            model       = eval(model_bytes.decode('utf-8'))
+            model = eval(model_bytes.decode("utf-8"))
         else:
-            model       = { "name"    : "NOT FOUND",
-                            "version" : "cgmes_v2_4_15",
-                            "profiles": [] }
-        model['id']     = int(model_id_char)
+            model = {"name": "NOT FOUND", "version": "cgmes_v2_4_15", "profiles": []}
+        model["id"] = int(model_id_char)
         return model
 
     if redis_connection.smembers("models") != None:
         return list(map(decode, redis_connection.smembers("models")))
     else:
         return []
+
 
 def get_record(model_id):
     """Get the full record of a stored model. This includes the cimobj and the xml files.
@@ -101,6 +103,7 @@ def get_record(model_id):
         files.append(newfile)
     return record(model, cimpy_data, files)
 
+
 def put_model(new_model, cimpy_data, files):
     """Store a model in the db
 
@@ -115,12 +118,13 @@ def put_model(new_model, cimpy_data, files):
     redis_connection.set(str(new_id), new_model.__repr__())
     redis_connection.set(str(new_id) + "_cimpy", cimpy_data.__repr__())
     redis_connection.set(str(new_id) + "_files_len", len(files))
-    for index,file_ in enumerate(files):
+    for index, file_ in enumerate(files):
         file_.seek(0)
         data = file_.read()
         data_addr = str(new_id) + "_file_" + str(index)
         redis_connection.set(data_addr, data)
     return new_id
+
 
 def delete_model(model_id):
     """Delete a network model
@@ -130,16 +134,24 @@ def delete_model(model_id):
 
     :rtype: Model
     """
-    model_bytes     = redis_connection.get(model_id)
+    model_bytes = redis_connection.get(model_id)
     if model_bytes != None:
         print("MODEL_BYTES: ", model_bytes)
-        model       = eval(model_bytes.decode('utf-8'))
-        model['id'] = int(model_id)
+        model = eval(model_bytes.decode("utf-8"))
+        model["id"] = int(model_id)
     else:
-        return Error(code=404, message="Cannot delete model with id: " + str(model_id) + ", not found in database"), 404
+        return (
+            Error(
+                code=404,
+                message="Cannot delete model with id: "
+                + str(model_id)
+                + ", not found in database",
+            ),
+            404,
+        )
 
     files_len_bytes = redis_connection.get(str(model_id) + "_files_len")
-    files_len       = int(files_len_bytes.decode('utf-8'))
+    files_len = int(files_len_bytes.decode("utf-8"))
     redis_connection.delete(str(model_id))
     redis_connection.delete(str(model_id) + "_cimpy")
     redis_connection.delete(str(model_id) + "_files_len")

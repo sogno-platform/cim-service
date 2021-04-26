@@ -14,7 +14,6 @@ from xml.etree import ElementTree
 import model_db
 
 
-
 def add_element(id_):
     """Add element to model
 
@@ -28,12 +27,11 @@ def add_element(id_):
     # if connexion.request.is_json:
     #     new_model_element = NewModelElement.from_dict(
     #         connexion.request.get_json())
-    raise Exception('Unimplemented')
+    raise Exception("Unimplemented")
 
 
 def add_model():
-    """Add a new network model
-    """
+    """Add a new network model"""
 
     # parse the json request
     new_model = Model.from_dict(connexion.request.form)
@@ -73,7 +71,7 @@ def delete_element(id_, elem_id):
 
     :rtype: ModelElement
     """
-    raise Exception('Unimplemented')
+    raise Exception("Unimplemented")
 
 
 def delete_model(id_):
@@ -101,11 +99,21 @@ def export_model(id_):
     model_record = model_db.get_model(id_)
 
     if isinstance(model_record, model_db.record):
-        model_files    = model_record.files
+        model_files = model_record.files
         # TODO: Which Profiles? Profile in Request?
-        return model_files
+        return cimpy.cimexport.generate_xml(
+            model.cimobj,
+            "cgmes_v2_4_15",
+            cimpy.cgmes_v2_4_15.Base.Profile["EQ"],
+            ["DI", "EQ", "SV", "TP"],
+        )
     else:
-        return Error(code=404, message="No model with id: " + str(id_) + " found in database"), 404
+        return (
+            Error(
+                code=404, message="No model with id: " + str(id_) + " found in database"
+            ),
+            404,
+        )
 
 
 def get_element(id_, elem_id):
@@ -118,7 +126,7 @@ def get_element(id_, elem_id):
 
     :rtype: ModelElementAttributes
     """
-    raise Exception('Unimplemented')
+    raise Exception("Unimplemented")
 
 
 def get_elements(id_):
@@ -130,7 +138,7 @@ def get_elements(id_):
 
     :rtype: List[ModelElement]
     """
-    raise Exception('Unimplemented')
+    raise Exception("Unimplemented")
 
 
 def get_model(id_):
@@ -176,7 +184,7 @@ def update_element(id_, elem_id, model_element_update):  # noqa: E501
     # if connexion.request.is_json:
     #     model_element_update = ModelElementUpdate.from_dict(
     #         connexion.request.get_json())
-    raise Exception('Unimplemented')
+    raise Exception("Unimplemented")
 
 
 def update_model(id_):  # noqa: E501
@@ -191,12 +199,12 @@ def update_model(id_):  # noqa: E501
     """
     # if connexion.request.is_json:
     # model_update = ModelUpdate.from_dict(connexion.request.get_json())
-    raise Exception('Unimplemented')
+    raise Exception("Unimplemented")
 
 
 def apikey_auth(apikey, required_scopes=None):
-    if apikey == '123':
-        return {'sub': 'admin'}
+    if apikey == "123":
+        return {"sub": "admin"}
 
     # optional: raise exception for custom error response
     return None
