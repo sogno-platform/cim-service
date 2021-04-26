@@ -26,8 +26,9 @@ def overwrite_connection(connection):
     global redis_connection
     redis_connection = connection
 
-def get_model(model_id):
-    """Get a network model
+
+def get_record(model_id):
+    """Get a record in the DB
     This is only useful at the moment to get the name of the model
 
     :param id: Model id
@@ -35,9 +36,15 @@ def get_model(model_id):
 
     :rtype: Model
     """
-    model = redis_connection.get(model_id).decode("utf-8")
-    cimpy_data = redis_connection.get(str(model_id) + "_cimpy").decode('utf-8')
-    files_len = int(redis_connection.get(str(model_id) + "_files_len").decode('utf-8'))
+
+    try:
+        model = redis_connection.get(model_id).decode("utf-8")
+        cimpy_data = redis_connection.get(str(model_id) + "_cimpy").decode("utf-8")
+        files_len = int(
+            redis_connection.get(str(model_id) + "_files_len").decode("utf-8")
+        )
+    except AttributeError:
+        raise KeyError
     files = []
     for index in range(files_len):
         data_addr = str(model_id) + "_file_" + str(index)
@@ -76,11 +83,23 @@ def get_record(model_id):
 
     :rtype: record
     """
-    global models
     try:
-        return models[str(model_id)]
-    except KeyError:
-        return Non
+        model = redis_connection.get(model_id).decode("utf-8")
+        cimpy_data = redis_connection.get(str(model_id) + "_cimpy").decode("utf-8")
+        files_len = int(
+            redis_connection.get(str(model_id) + "_files_len").decode("utf-8")
+        )
+    except AttributeError:
+        raise KeyError
+
+    files = []
+    for index in range(files_len):
+        data_addr = str(model_id) + "_file_" + str(index)
+        data = redis_connection.get(data_addr)
+        newfile = SpooledTemporaryFile()
+        newfile.write(data)
+        files.append(newfile)
+    return record(model, cimpy_data, files)
 
 def put_model(new_model, cimpy_data, files):
     """Store a model in the db

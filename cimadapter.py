@@ -1,8 +1,11 @@
+import json
+from types import SimpleNamespace
 import cimpy
 import connexion
 from models import Error
 from models import Model
 from models import ModelReply
+
 # from models import ModelElementUpdate
 # from models import ModelUpdate
 # from models import NewModelElement
@@ -140,11 +143,11 @@ def get_model(id_):
     :rtype: Model
     """
     try:
-        model_record = model_db.get_model(id_)
-        model_str    = model_record.model
-        model        = eval(model_str)
-        model['id']  = id_
-        return ModelReply.from_dict(model)
+        record = model_db.get_record(id_)
+        # Temporary Hack: manipulate the stored json so that it can be deserialized into a model again
+        model_str = record.model.replace("\n", "").replace("'", '"')
+        model = json.loads(model_str, object_hook=lambda d: SimpleNamespace(**d))
+        return ModelReply.from_model(model, id_)
     except KeyError:
         return Error(code=404, message="Model not found"), 404
 
