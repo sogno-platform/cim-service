@@ -1,3 +1,5 @@
+![CI Status](https://github.com/sogno-platform/cim-service/actions/workflows/ci.yml/badge.svg)
+
 # CIM Service
 
 This is a server which provides an [OpenAPI](http://spec.openapis.org/oas/v3.0.3) REST API for [CIMpy](https://git.rwth-aachen.de/acs/public/cim/cimpy).
