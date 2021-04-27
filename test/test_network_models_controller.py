@@ -223,8 +223,14 @@ class TestNetworkModelsController(BaseTestCase):
             headers=headers)
         self.assert404(faulty_response,
                        'Response is: ' + faulty_response.data.decode('utf-8'))
-        db.models[str(testid)] = db.record(
-            Model(testname, "DL", "cgmes_v2_4_15"), cimobj={}, files=None)
+
+        # Create the entry in the database
+        redis.sadd("models", str(testid))
+        redis.set(str(testid), Model(testname, "DL", "cgmes_v2_4_15").__repr__())
+        redis.set(str(testid) + "_files_len", "0")
+
+        assert redis.get(str(testid)) is not None
+
         response = self.client.open(
             '/models/{id}'.format(id=testid),
             method='DELETE',
@@ -232,7 +238,7 @@ class TestNetworkModelsController(BaseTestCase):
         self.assert200(response,
                        'Response is: ' + response.data.decode('utf-8'))
 
-        assert str(testid) not in db.models
+        assert redis.get(str(testid)) is None
 
         returned_model = ModelReply.from_dict(
             json.loads(response.get_data()))
@@ -348,7 +354,7 @@ class TestNetworkModelsController(BaseTestCase):
                        'Response is: '
                        + faulty_response.data.decode('utf-8'))
 
-        db.models["123456789"] = db.record(
+        db.models["123456789"] = record(
             Model("test_getmodel", "DL", "cgmes_v2_4_15"), cimobj={}, files=None)
         response = self.client.open(
             '/models/{id}'.format(id=id),
