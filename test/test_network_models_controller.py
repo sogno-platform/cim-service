@@ -341,12 +341,13 @@ class TestNetworkModelsController(BaseTestCase):
 
         Get a network model
         """
-        id=123456789
+        testid=123456789
+        testname = "gettestrecord"
         headers = {
             'Accept': 'application/json',
         }
         faulty_response = self.client.open(
-            '/models/{id}'.format(id=id),
+            '/models/{id}'.format(id=testid),
             method='GET',
             headers=headers)
         # there shouldn't be any model in the data yet
@@ -354,10 +355,15 @@ class TestNetworkModelsController(BaseTestCase):
                        'Response is: '
                        + faulty_response.data.decode('utf-8'))
 
-        db.models["123456789"] = record(
-            Model("test_getmodel", "DL", "cgmes_v2_4_15"), cimobj={}, files=None)
+        # Create the entry in the database
+        redis.sadd("models", str(testid))
+        redis.set(str(testid), Model(testname, "DL", "cgmes_v2_4_15").__repr__())
+        redis.set(str(testid) + "_cimpy", "")
+        redis.set(str(testid) + "_files_len", "0")
+
+        # Now we should receive a model
         response = self.client.open(
-            '/models/{id}'.format(id=id),
+            '/models/{id}'.format(id=testid),
             method='GET',
             headers=headers)
         self.assert200(response,
